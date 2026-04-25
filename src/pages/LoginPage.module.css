@@ -154,6 +154,27 @@
   text-align: center;
 }
 
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.3rem 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.dividerLabel {
+  font-size: 0.8rem;
+  color: #aaa;
+  white-space: nowrap;
+}
+
 .submitBtn {
   margin-top: 0.5rem;
   padding: 0.85rem;
@@ -212,4 +233,105 @@
 
 .footerLink:hover {
   text-decoration: underline;
+}
+
+/* ── Required mark ── */
+.requiredMark {
+  color: #e53935;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* ── Referrer verify row ── */
+.verifyRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.verifyBtn {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid #3a6b20;
+  border-radius: 10px;
+  background: #fff;
+  color: #3a6b20;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.verifyBtn:hover:not(:disabled) {
+  background: #3a6b20;
+  color: #fff;
+}
+
+.verifyBtn:disabled {
+  border-color: #ccc;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.verifyBtnDone {
+  border-color: #aaa;
+  color: #aaa;
+}
+
+.verifiedBadge {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #2e7d32;
+  white-space: nowrap;
+}
+
+/* ── Popup ── */
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.popup {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2rem 2rem 1.5rem;
+  max-width: 320px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.popupTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #c62828;
+  margin: 0 0 0.75rem;
+}
+
+.popupMsg {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+}
+
+.popupBtn {
+  padding: 0.65rem 2rem;
+  border: none;
+  border-radius: 10px;
+  background: #3a6b20;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.popupBtn:hover {
+  background: #2d5418;
 }
