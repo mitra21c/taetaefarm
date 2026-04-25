@@ -59,6 +59,35 @@
   margin: 0;
 }
 
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  border-radius: 12px;
+  background: #f0f4f0;
+  padding: 4px;
+  margin-bottom: 1.8rem;
+  gap: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tabActive {
+  background: #fff;
+  color: #1b5e20;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* ── Form ── */
 .form {
   display: flex;
@@ -112,6 +141,15 @@
   border-radius: 10px;
   background: #fdecea;
   color: #c62828;
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.serverSuccess {
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
   font-size: 0.88rem;
   text-align: center;
 }
