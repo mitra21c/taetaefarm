@@ -8,6 +8,9 @@ export interface RegisterRequest {
   email: string;
   password: string;
   phone: string;
+  address: string;
+  post: string;
+  referrerId?: number;
   referrerName?: string;
   referrerEmail?: string;
   referrerPhone?: string;

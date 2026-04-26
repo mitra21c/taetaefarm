@@ -3,19 +3,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #e8f5e9 0%, #f9fbe7 50%, #e3f2fd 100%);
-  padding: 1rem;
+  background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 55%, #242424 100%);
+  padding: 2rem 1rem;
 }
 
 .card {
   width: 100%;
-  max-width: 420px;
-  background: #fff;
-  border-radius: 24px;
+  max-width: 440px;
+  background: #1e1e1e;
+  border-radius: 20px;
   padding: 2.5rem;
-  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* ── Header ── */
 .header {
   text-align: center;
   margin-bottom: 2rem;
@@ -23,7 +25,7 @@
 
 .backLink {
   display: inline-block;
-  color: #888;
+  color: #888888;
   font-size: 0.85rem;
   text-decoration: none;
   margin-bottom: 1.5rem;
@@ -31,7 +33,7 @@
 }
 
 .backLink:hover {
-  color: #3a6b20;
+  color: #cccccc;
 }
 
 .logoWrap {
@@ -49,21 +51,21 @@
 .title {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #1b5e20;
+  color: #ffffff;
   margin: 0;
 }
 
 .subtitle {
   font-size: 0.9rem;
-  color: #777;
+  color: #888888;
   margin: 0;
 }
 
 /* ── Tabs ── */
 .tabs {
   display: flex;
-  border-radius: 12px;
-  background: #f0f4f0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
   padding: 4px;
   margin-bottom: 1.8rem;
   gap: 4px;
@@ -73,26 +75,26 @@
   flex: 1;
   padding: 0.6rem;
   border: none;
-  border-radius: 9px;
+  border-radius: 8px;
   background: transparent;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #888;
+  color: #888888;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 
 .tabActive {
-  background: #fff;
-  color: #1b5e20;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  background: #3a3a3a;
+  color: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* ── Form ── */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1rem;
 }
 
 .fieldGroup {
@@ -104,83 +106,100 @@
 .label {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #333;
+  color: #cccccc;
 }
 
 .input {
   padding: 0.75rem 1rem;
   border-radius: 10px;
-  border: 1.5px solid #ddd;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
   font-size: 0.95rem;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
-  color: #222;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
 }
 
 .input:focus {
-  border-color: #3a6b20;
-  box-shadow: 0 0 0 3px rgba(58, 107, 32, 0.12);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
 }
 
 .inputError {
-  border-color: #e53935;
+  border-color: #ef5350;
 }
 
 .inputError:focus {
-  border-color: #e53935;
-  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.12);
+  border-color: #ef5350;
+  box-shadow: 0 0 0 3px rgba(239, 83, 80, 0.18);
+}
+
+.inputReadonly {
+  background: rgba(255, 255, 255, 0.03);
+  color: #888888;
+  cursor: default;
+}
+
+.inputReadonly:focus {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: none;
 }
 
 .errorMsg {
   font-size: 0.8rem;
-  color: #e53935;
+  color: #ef9a9a;
 }
 
 .serverError {
   padding: 0.7rem 1rem;
   border-radius: 10px;
-  background: #fdecea;
-  color: #c62828;
+  background: rgba(239, 83, 80, 0.15);
+  color: #ef9a9a;
   font-size: 0.88rem;
   text-align: center;
+  border: 1px solid rgba(239, 83, 80, 0.3);
 }
 
-.serverSuccess {
-  padding: 0.7rem 1rem;
-  border-radius: 10px;
-  background: #e8f5e9;
-  color: #2e7d32;
-  font-size: 0.88rem;
-  text-align: center;
-}
-
-.divider {
+/* ── Section header ── */
+.sectionHeader {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin: 0.3rem 0;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  border-left: 3px solid #505050;
+  margin-top: 0.25rem;
 }
 
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: #e0e0e0;
+.sectionIcon {
+  font-size: 1rem;
 }
 
-.dividerLabel {
-  font-size: 0.8rem;
-  color: #aaa;
-  white-space: nowrap;
+.sectionTitle {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #cccccc;
 }
 
+.sectionNote {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: #ef9a9a;
+  font-weight: 600;
+}
+
+/* ── Submit button ── */
 .submitBtn {
   margin-top: 0.5rem;
   padding: 0.85rem;
   border: none;
-  border-radius: 12px;
-  background: #3a6b20;
+  border-radius: 10px;
+  background: #3a3a3a;
   color: #fff;
   font-size: 1rem;
   font-weight: 700;
@@ -193,12 +212,12 @@
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: #2d5418;
+  background: #505050;
   transform: translateY(-1px);
 }
 
 .submitBtn:disabled {
-  opacity: 0.65;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
@@ -206,7 +225,7 @@
 .spinner {
   width: 20px;
   height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.4);
+  border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -220,13 +239,13 @@
 .footer {
   text-align: center;
   font-size: 0.85rem;
-  color: #888;
+  color: #888888;
   margin-top: 1.5rem;
   margin-bottom: 0;
 }
 
 .footerLink {
-  color: #3a6b20;
+  color: #cccccc;
   font-weight: 600;
   text-decoration: none;
 }
@@ -237,12 +256,12 @@
 
 /* ── Required mark ── */
 .requiredMark {
-  color: #e53935;
+  color: #ef9a9a;
   font-size: 0.78rem;
   font-weight: 700;
 }
 
-/* ── Referrer verify row ── */
+/* ── Verify row ── */
 .verifyRow {
   display: flex;
   align-items: center;
@@ -252,10 +271,10 @@
 .verifyBtn {
   flex: 1;
   padding: 0.65rem 1rem;
-  border: 1.5px solid #3a6b20;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
   border-radius: 10px;
-  background: #fff;
-  color: #3a6b20;
+  background: transparent;
+  color: #cccccc;
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
@@ -263,25 +282,26 @@
 }
 
 .verifyBtn:hover:not(:disabled) {
-  background: #3a6b20;
+  background: #3a3a3a;
   color: #fff;
+  border-color: #3a3a3a;
 }
 
 .verifyBtn:disabled {
-  border-color: #ccc;
-  color: #ccc;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.2);
   cursor: not-allowed;
 }
 
 .verifyBtnDone {
-  border-color: #aaa;
-  color: #aaa;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.25);
 }
 
 .verifiedBadge {
   font-size: 0.88rem;
   font-weight: 700;
-  color: #2e7d32;
+  color: #cccccc;
   white-space: nowrap;
 }
 
@@ -289,7 +309,7 @@
 .popupOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -297,34 +317,74 @@
 }
 
 .popup {
-  background: #fff;
-  border-radius: 20px;
+  background: #242424;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
   padding: 2rem 2rem 1.5rem;
   max-width: 320px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.popupTitle {
+.popupIconOk {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+
+.popupIconError {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(239, 83, 80, 0.15);
+  color: #ef9a9a;
+  font-size: 1.5rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+
+.popupTitleOk {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #c62828;
-  margin: 0 0 0.75rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+.popupTitleError {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ef9a9a;
+  margin: 0;
 }
 
 .popupMsg {
   font-size: 0.9rem;
-  color: #444;
+  color: #aaaaaa;
   line-height: 1.6;
-  margin: 0 0 1.25rem;
+  margin: 0.25rem 0 0.75rem;
 }
 
 .popupBtn {
   padding: 0.65rem 2rem;
   border: none;
   border-radius: 10px;
-  background: #3a6b20;
+  background: #3a3a3a;
   color: #fff;
   font-size: 0.95rem;
   font-weight: 700;
@@ -333,5 +393,5 @@
 }
 
 .popupBtn:hover {
-  background: #2d5418;
+  background: #505050;
 }

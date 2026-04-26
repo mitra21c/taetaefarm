@@ -1,0 +1,147 @@
+.main {
+  min-height: 100vh;
+  background: #121212;
+  padding-top: 64px;
+}
+
+.inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.hero {
+  text-align: center;
+  padding: 1.5rem 0 0.5rem;
+}
+
+.title {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #888888;
+  margin: 0;
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: #888888;
+}
+
+.noticeIcon {
+  font-size: 1rem;
+}
+
+.tableWrap {
+  background: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 540px;
+}
+
+.table thead tr {
+  background: rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table th {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #cccccc;
+  white-space: nowrap;
+}
+
+.thCenter {
+  text-align: center;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.15s;
+}
+
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.table td {
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
+  color: #aaaaaa;
+  vertical-align: middle;
+}
+
+.tdName {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.tdUnit {
+  color: #666666;
+  font-size: 0.82rem;
+}
+
+.tdPrice {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.tdMid {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.tdCenter {
+  text-align: center;
+}
+
+.trend {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.trendUp {
+  color: #f07070;
+}
+
+.trendDown {
+  color: #70b8f0;
+}
+
+.trendSame {
+  color: #888888;
+}
+
+.disclaimer {
+  font-size: 0.8rem;
+  color: #555555;
+  line-height: 1.6;
+  margin: 0;
+}

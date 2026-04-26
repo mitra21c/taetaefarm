@@ -1,0 +1,30 @@
+.footer {
+  background: #0d2b5e;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem 2rem;
+  margin-top: auto;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.line {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #a8c4e8;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.label {
+  font-weight: 700;
+  color: #ffffff;
+  min-width: 3.5rem;
+}

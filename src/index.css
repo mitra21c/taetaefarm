@@ -10,12 +10,31 @@
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* ── Dark Grey & White Theme ── */
+  --grey-950: #0d0d0d;
+  --grey-900: #121212;
+  --grey-800: #1a1a1a;
+  --grey-700: #242424;
+  --grey-600: #2e2e2e;
+  --grey-500: #3a3a3a;
+  --grey-400: #505050;
+  --grey-300: #888888;
+  --grey-200: #bbbbbb;
+  --grey-100: #e0e0e0;
+  --grey-50:  #f5f5f5;
+  --bg:       #121212;
+  --surface:  #1e1e1e;
+  --border:   rgba(255, 255, 255, 0.12);
+  --text:     #ffffff;
+  --text-sub: #cccccc;
+  --text-muted: #888888;
 }
 
 body {
   margin: 0;
-  background: #f1f8e9;
-  color: #222;
+  background: var(--bg);
+  color: var(--text);
 }
 
 #root {
