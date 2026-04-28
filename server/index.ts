@@ -5,24 +5,19 @@ import jwt from 'jsonwebtoken';
 import CryptoJS from 'crypto-js';
 
 const app = express();
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : 8080;
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY ?? 'mitra21c';
-const JWT_SECRET = process.env.JWT_SECRET ?? 'taetaefarm_jwt_secret_2024';
+const PORT = 8080;
+const ENCRYPTION_KEY = 'mitra21c';
+const JWT_SECRET = 'taetaefarm_jwt_secret_2024';
 
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-const pool = process.env.DATABASE_URL
-  ? new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-    })
-  : new Pool({
-      user: 'mitra21c',
-      host: '/var/run/postgresql',
-      database: 'taetae_db',
-      port: 5432,
-    });
+const pool = new Pool({
+  user: 'mitra21c',
+  host: '/var/run/postgresql',
+  database: 'taetae_db',
+  port: 5432,
+});
 
 function decryptPassword(encrypted: string): string {
   const bytes = CryptoJS.AES.decrypt(encrypted, ENCRYPTION_KEY);
@@ -380,48 +375,8 @@ app.get('/api/orders', async (req, res) => {
 
 // ─────────────────────────── INIT ───────────────────────────
 
-async function initDb() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS users (
-      id          SERIAL PRIMARY KEY,
-      name        VARCHAR(255) NOT NULL,
-      phone       VARCHAR(255) NOT NULL,
-      email       VARCHAR(255) NOT NULL UNIQUE,
-      address     VARCHAR(255) NOT NULL,
-      post        VARCHAR(10)  NOT NULL,
-      role        VARCHAR(50)  DEFAULT 'user',
-      pass        VARCHAR(255) NOT NULL,
-      reference_email VARCHAR(255),
-      use         VARCHAR(1)   DEFAULT 'N',
-      created_at  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-      modified_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-      last_login  TIMESTAMP
-    );
-    CREATE TABLE IF NOT EXISTS orders (
-      id               SERIAL PRIMARY KEY,
-      user_id          INTEGER      NOT NULL,
-      name             VARCHAR(255) NOT NULL,
-      phone            VARCHAR(255) NOT NULL,
-      email            VARCHAR(255) NOT NULL,
-      order_item       VARCHAR(255) NOT NULL,
-      order_weight     INTEGER      NOT NULL,
-      order_price      INTEGER      NOT NULL,
-      reference_email  VARCHAR(255),
-      reference_name   VARCHAR(255) NOT NULL DEFAULT '',
-      receiver_name    VARCHAR(255) NOT NULL,
-      receiver_phone   VARCHAR(255) NOT NULL,
-      receiver_address VARCHAR(255) NOT NULL,
-      receiver_post    VARCHAR(10)  NOT NULL,
-      delivery_status  VARCHAR(10)  DEFAULT '주문대기',
-      created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-      modified_at      TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-}
-
 async function initAdmin() {
   try {
-    await initDb();
     const { rows } = await pool.query('SELECT COUNT(*) AS cnt FROM users');
     if (parseInt(rows[0].cnt, 10) > 0) return;
     const encPass = CryptoJS.AES.encrypt('Rlaalsckd77!', ENCRYPTION_KEY).toString();
