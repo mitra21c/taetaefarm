@@ -66,7 +66,7 @@ export default function MembersPage() {
   const updateMutation = useMutation({
     mutationFn: ({ id, role, use }: { id: number; role?: string; use?: string }) =>
       updateUser(id, { role, use }),
-    onSuccess: (_: void, { id }: { id: number }) => {
+    onSuccess: (_: void, { id }: { id: number; role?: string; use?: string }) => {
       queryClient.invalidateQueries({ queryKey: ['allUsers'] });
       setPendingRole(prev => { const n = { ...prev }; delete n[id]; return n; });
       setPendingUse(prev =>  { const n = { ...prev }; delete n[id]; return n; });

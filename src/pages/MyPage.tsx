@@ -62,7 +62,7 @@ export default function MyPage() {
             <InfoRow label="이메일" value={data.email} />
             <InfoRow label="전화번호" value={data.phone} />
             <InfoRow label="역할" value={ROLE_LABEL[data.role] ?? data.role} />
-            <InfoRow label="추천인 ID" value={data.reference_id !== 0 ? String(data.reference_id) : '없음'} />
+            <InfoRow label="추천인 E-Mail" value={data.reference_email || '없음'} />
             <InfoRow
               label="가입일"
               value={new Date(data.created_at).toLocaleDateString('ko-KR', {
