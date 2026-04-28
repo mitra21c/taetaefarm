@@ -21,17 +21,31 @@ function fmt(iso: string) {
 
 type ModalType = 'users' | 'orders' | null;
 
-const USER_COLS  = ['id','name','email','phone','role','reference_email','use','created_at'];
-const ORDER_COLS = ['id','name','email','order_item','order_weight','order_price',
-                    'receiver_name','delivery_status','created_at'];
-const USER_LABELS:  Record<string,string> = {
-  id:'ID', name:'이름', email:'이메일', phone:'연락처', role:'권한',
-  reference_email:'추천인 E-Mail', use:'승인', created_at:'생성일',
+const USER_COLS = [
+  'id','name','phone','email','address','post','role',
+  'reference_email','referrer_name','referrer_phone',
+  'use','created_at','modified_at',
+];
+const ORDER_COLS = [
+  'id','user_id','name','phone','email',
+  'order_item','order_weight','order_price',
+  'reference_email','reference_name',
+  'receiver_name','receiver_phone','receiver_address','receiver_post',
+  'delivery_status','created_at','modified_at',
+];
+const USER_LABELS: Record<string,string> = {
+  id:'ID', name:'이름', phone:'연락처', email:'이메일',
+  address:'주소', post:'우편번호', role:'권한',
+  reference_email:'추천인 이메일', referrer_name:'추천인 이름', referrer_phone:'추천인 연락처',
+  use:'승인', created_at:'생성일', modified_at:'수정일',
 };
 const ORDER_LABELS: Record<string,string> = {
-  id:'ID', name:'주문자', email:'이메일', order_item:'상품명',
-  order_weight:'무게(Kg)', order_price:'가격(원)', receiver_name:'수신자',
-  delivery_status:'진행상태', created_at:'주문일',
+  id:'ID', user_id:'회원ID', name:'주문자', phone:'연락처', email:'이메일',
+  order_item:'상품명', order_weight:'무게(Kg)', order_price:'가격(원)',
+  reference_email:'추천인 이메일', reference_name:'추천인 이름',
+  receiver_name:'수신자', receiver_phone:'수신자 연락처',
+  receiver_address:'배송지', receiver_post:'우편번호',
+  delivery_status:'진행상태', created_at:'주문일', modified_at:'수정일',
 };
 
 export default function DevPage() {
@@ -100,7 +114,7 @@ export default function DevPage() {
 
   const cellVal = (row: any, col: string) => {
     const v = row[col];
-    if (col === 'created_at') return fmt(v);
+    if (col === 'created_at' || col === 'modified_at') return fmt(v);
     if (v === null || v === undefined || v === '') return '—';
     return String(v);
   };
