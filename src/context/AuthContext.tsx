@@ -1,6 +1,9 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import type { User, JwtPayload } from '../types/auth';
+
+const IDLE_TIMEOUT = 5 * 60 * 1000; // 5분
+const IDLE_EVENTS = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'] as const;
 
 interface AuthContextValue {
   user: User | null;
@@ -32,6 +35,13 @@ function initUser(): User | null {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(initUser);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearAuth = useCallback(() => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    setUser(null);
+  }, []);
 
   const setTokens = useCallback((accessToken: string, refreshToken: string) => {
     localStorage.setItem('accessToken', accessToken);
@@ -39,11 +49,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(parseUser(accessToken));
   }, []);
 
-  const clearAuth = useCallback(() => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    setUser(null);
-  }, []);
+  useEffect(() => {
+    if (!user) return;
+
+    const logout = () => {
+      clearAuth();
+      window.location.href = '/login';
+    };
+
+    const reset = () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(logout, IDLE_TIMEOUT);
+    };
+
+    reset();
+    IDLE_EVENTS.forEach(e => window.addEventListener(e, reset));
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      IDLE_EVENTS.forEach(e => window.removeEventListener(e, reset));
+    };
+  }, [user, clearAuth]);
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated: !!user, setTokens, clearAuth }}>

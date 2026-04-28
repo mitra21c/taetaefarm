@@ -1,12 +1,10 @@
 .container {
   min-height: 100vh;
   background: linear-gradient(160deg, #0d0d0d 0%, #1a1a1a 60%, #242424 100%);
-  padding: 84px 2rem 3rem;
+  padding: 84px 20px 3rem;
 }
 
 .inner {
-  max-width: 1100px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -27,17 +25,6 @@
   gap: 0.4rem;
 }
 
-.backLink {
-  font-size: 0.85rem;
-  color: #888888;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.backLink:hover {
-  color: #cccccc;
-}
-
 .pageTitle {
   font-size: 1.6rem;
   font-weight: 800;
@@ -48,9 +35,7 @@
   gap: 0.5rem;
 }
 
-.titleIcon {
-  font-size: 1.5rem;
-}
+.titleIcon { font-size: 1.5rem; }
 
 .headerRight {
   display: flex;
@@ -67,20 +52,42 @@
   border-radius: 10px;
 }
 
-.loginBtn {
-  padding: 0.45rem 1.2rem;
-  border-radius: 10px;
-  background: #3a3a3a;
-  color: #fff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.2s;
+/* ── 검색 ── */
+.searchWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.loginBtn:hover {
-  background: #505050;
+.searchInput {
+  width: 100%;
+  padding: 0.6rem 2.5rem 0.6rem 1rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: #1e1e1e;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
 }
+
+.searchInput::placeholder { color: #555555; }
+.searchInput:focus { border-color: rgba(255, 255, 255, 0.35); }
+
+.searchClear {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: #666666;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  line-height: 1;
+}
+
+.searchClear:hover { color: #aaaaaa; }
 
 /* ── Table wrapper ── */
 .tableWrap {
@@ -94,7 +101,7 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 700px;
+  min-width: 1100px;
 }
 
 .table thead tr {
@@ -103,77 +110,242 @@
 }
 
 .table th {
-  padding: 0.9rem 1rem;
+  padding: 0.9rem 0.85rem;
   text-align: left;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #cccccc;
   white-space: nowrap;
 }
+
+.thSortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.thSortable:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sortIcon {
+  font-size: 0.7rem;
+  color: #666666;
+  margin-left: 0.1rem;
+}
+
+.thSortable:hover .sortIcon { color: #aaaaaa; }
 
 .table tbody tr {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   transition: background 0.15s;
 }
 
-.table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
+.table tbody tr:last-child { border-bottom: none; }
+.table tbody tr:hover { background: rgba(255, 255, 255, 0.04); }
 
 .table td {
-  padding: 0.85rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.75rem 0.85rem;
+  font-size: 0.85rem;
   color: #aaaaaa;
   vertical-align: middle;
 }
 
-.tdId {
-  font-weight: 700;
-  color: #888888;
-  width: 50px;
+/* ── Cell helpers ── */
+.tdNo {
+  color: #555555;
+  font-size: 0.8rem;
+  text-align: center;
+  width: 3rem;
 }
 
-.tdName {
+.tdBold {
   font-weight: 700;
   color: #ffffff;
+  white-space: nowrap;
+}
+
+.tdSub {
+  color: #888888;
+  font-size: 0.82rem;
 }
 
 .tdEmail {
   color: #cccccc;
+  font-size: 0.82rem;
 }
 
-.tdCenter {
-  text-align: center;
-}
+.tdCenter { text-align: center; }
 
-.tdDate {
-  color: #888888;
+/* 2줄 표시 */
+.line1 {
+  display: block;
+  color: #dddddd;
+  font-size: 0.83rem;
   white-space: nowrap;
 }
 
-/* ── Role badge ── */
-.roleBadge {
-  display: inline-block;
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 0.2rem 0.65rem;
+.line2 {
+  display: block;
+  color: #777777;
+  font-size: 0.76rem;
+  margin-top: 0.15rem;
+  white-space: nowrap;
+}
+
+/* ── 권한 select ── */
+.roleSelect {
+  padding: 0.2rem 1.5rem 0.2rem 0.5rem;
   border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 0.77rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23aaaaaa' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.4rem center;
 }
 
-.roleAdmin {
-  background: rgba(255, 255, 255, 0.12);
+.roleSelectAdmin {
+  background-color: rgba(255, 255, 255, 0.1);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.roleUser {
-  background: rgba(255, 255, 255, 0.06);
+.roleSelectManager {
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+.roleSelectUser {
+  background-color: rgba(255, 255, 255, 0.05);
   color: #aaaaaa;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ── 승인 select ── */
+.useSelect {
+  padding: 0.2rem 1.4rem 0.2rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 0.77rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23aaaaaa' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.4rem center;
+}
+
+.useSelectY {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.useSelectN {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+}
+
+/* ── 엑셀 버튼 ── */
+.excelBtn {
+  padding: 0.45rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.excelBtn:hover:not(:disabled) { background: rgba(34, 197, 94, 0.22); }
+.excelBtn:disabled { opacity: 0.5; cursor: default; }
+
+.excelUploadBtn {
+  padding: 0.45rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  background: rgba(96, 165, 250, 0.12);
+  color: #60a5fa;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.excelUploadBtn:hover:not(:disabled) { background: rgba(96, 165, 250, 0.22); }
+.excelUploadBtn:disabled { opacity: 0.5; cursor: default; }
+
+/* ── 새로고침 버튼 ── */
+.refreshBtn {
+  padding: 0.45rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #2a2a2a;
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.refreshBtn:hover:not(:disabled) { background: #3a3a3a; }
+.refreshBtn:disabled { opacity: 0.5; cursor: default; }
+
+/* ── 수정 버튼 ── */
+.saveBtn {
+  padding: 0.25rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #0d2b5e;
+  color: #ffffff;
+  font-size: 0.77rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.saveBtn:hover:not(:disabled) { background: #1a3a7a; }
+
+.saveBtn:disabled {
+  background: #2a2a2a;
+  color: #555555;
+  border-color: rgba(255, 255, 255, 0.08);
+  cursor: default;
+}
+
+/* ── 삭제 버튼 ── */
+.deleteBtn {
+  padding: 0.25rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  font-size: 0.77rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.deleteBtn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.deleteBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 /* ── States ── */
@@ -217,11 +389,6 @@
 
 /* ── Responsive ── */
 @media (max-width: 600px) {
-  .container {
-    padding: 80px 1rem 2rem;
-  }
-
-  .pageTitle {
-    font-size: 1.3rem;
-  }
+  .container { padding: 80px 20px 2rem; }
+  .pageTitle { font-size: 1.3rem; }
 }

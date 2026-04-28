@@ -25,10 +25,18 @@ export const checkDuplicateApi = async (
   email: string,
   phone: string,
 ): Promise<{ isDuplicate: boolean }> => {
-  const { data } = await axiosInstance.post<{ isDuplicate: boolean }>('/auth/check-duplicate', {
-    email,
-    phone,
-  });
+  const { data } = await axiosInstance.post<{ isDuplicate: boolean }>('/auth/check-duplicate', { email, phone });
+  return data;
+};
+
+export const verifyReferrerApi = async (
+  name: string,
+  email: string,
+): Promise<{ found: boolean; referrerEmail?: string }> => {
+  const { data } = await axiosInstance.post<{ found: boolean; referrerEmail?: string }>(
+    '/auth/verify-referrer',
+    { name, email },
+  );
   return data;
 };
 
@@ -40,8 +48,12 @@ export interface UserInfo {
   address: string;
   post: string;
   role: string;
-  reference_id: number;
+  reference_email: string | null;
+  use: string;
   created_at: string;
+  modified_at: string;
+  referrer_name: string | null;
+  referrer_phone: string | null;
 }
 
 export const getAllUsers = async (): Promise<UserInfo[]> => {
@@ -49,10 +61,25 @@ export const getAllUsers = async (): Promise<UserInfo[]> => {
   return data;
 };
 
+export const approveUser = async (id: number, use: 'Y' | 'N'): Promise<void> => {
+  await axiosInstance.patch(`/users/${id}/approve`, { use });
+};
+
+export const updateUser = async (id: number, payload: { role?: string; use?: string }): Promise<void> => {
+  await axiosInstance.patch(`/users/${id}`, payload);
+};
+
+export const deleteUser = async (id: number): Promise<void> => {
+  await axiosInstance.delete(`/users/${id}`);
+};
+
+export const bulkUploadUsers = async (users: Array<Record<string, string>>): Promise<{ message: string }> => {
+  const { data } = await axiosInstance.post<{ message: string }>('/users/bulk', { users });
+  return data;
+};
+
 export const getUserInfo = async (email: string): Promise<UserInfo> => {
-  const { data } = await axiosInstance.get<UserInfo>(
-    `/users/email/${encodeURIComponent(email)}`,
-  );
+  const { data } = await axiosInstance.get<UserInfo>(`/users/email/${encodeURIComponent(email)}`);
   return data;
 };
 
@@ -80,16 +107,5 @@ export const updateOrderStatus = async (id: number, delivery_status: string): Pr
 
 export const getOrders = async (params?: { email?: string; year?: number }): Promise<any[]> => {
   const { data } = await axiosInstance.get('/orders', { params });
-  return data;
-};
-
-export const verifyReferrerApi = async (
-  name: string,
-  email: string,
-): Promise<{ found: boolean; referrerId?: number }> => {
-  const { data } = await axiosInstance.post<{ found: boolean; referrerId?: number }>(
-    '/auth/verify-referrer',
-    { name, email },
-  );
   return data;
 };

@@ -12,7 +12,7 @@ export function useLogin() {
     mutationFn: (credentials: LoginRequest) => login(credentials),
     onSuccess: (data) => {
       setTokens(data.accessToken, data.refreshToken);
-      navigate('/');
+      navigate(data.user.role === 'admin' ? '/members' : '/');
     },
   });
 }

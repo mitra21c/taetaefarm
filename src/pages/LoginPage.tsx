@@ -38,7 +38,7 @@ export default function LoginPage() {
   const [tab, setTab] = useState<'login' | 'register'>('login');
   const [personalInfoVerified, setPersonalInfoVerified] = useState(false);
   const [referrerVerified, setReferrerVerified] = useState(false);
-  const [referrerId, setReferrerId] = useState<number | null>(null);
+  const [referrerEmail, setReferrerEmail] = useState<string | null>(null);
   const [popup, setPopup] = useState<PopupKind>(null);
 
   const {
@@ -68,7 +68,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     setReferrerVerified(false);
-    setReferrerId(null);
+    setReferrerEmail(null);
   }, [referrerNameVal, referrerEmailVal]);
 
   const canCheckPersonalInfo =
@@ -79,7 +79,7 @@ export default function LoginPage() {
     !regErrors.referrerName &&
     !regErrors.referrerEmail;
 
-  const canSubmit = isValid && personalInfoVerified && referrerId !== null;
+  const canSubmit = isValid && personalInfoVerified && referrerEmail !== null;
 
   const handleCheckPersonalInfo = async () => {
     const email = emailVal?.trim() ?? '';
@@ -104,17 +104,17 @@ export default function LoginPage() {
     const email = referrerEmailVal?.trim() ?? '';
     try {
       const result = await verifyReferrerApi(name, email);
-      if (result.found && result.referrerId != null) {
+      if (result.found && result.referrerEmail) {
         setReferrerVerified(true);
-        setReferrerId(result.referrerId);
+        setReferrerEmail(result.referrerEmail);
       } else {
         setReferrerVerified(false);
-        setReferrerId(null);
+        setReferrerEmail(null);
         setPopup('referrerNotFound');
       }
     } catch {
       setReferrerVerified(false);
-      setReferrerId(null);
+      setReferrerEmail(null);
       setPopup('referrerNotFound');
     }
   };
@@ -124,7 +124,7 @@ export default function LoginPage() {
       reset();
       setPersonalInfoVerified(false);
       setReferrerVerified(false);
-      setReferrerId(null);
+      setReferrerEmail(null);
       setTab('login');
     }
     setPopup(null);
@@ -137,7 +137,7 @@ export default function LoginPage() {
     try {
       await register({
         ...rest,
-        referrerId: referrerId!,
+        referrerEmail: referrerEmail!,
       });
       setPopup('registerSuccess');
     } catch {
@@ -262,7 +262,9 @@ export default function LoginPage() {
 
             {loginMutation.isError && (
               <div className={styles.serverError}>
-                이메일 또는 비밀번호가 올바르지 않습니다.
+                {(loginMutation.error as any)?.response?.status === 403
+                  ? '관리자 승인 대기 중입니다. 관리자에게 문의 하세요.'
+                  : '이메일 또는 비밀번호가 올바르지 않습니다.'}
               </div>
             )}
 
@@ -494,13 +496,13 @@ export default function LoginPage() {
             </div>
 
             <div className={styles.fieldGroup}>
-              <label htmlFor="reg-ref-id" className={styles.label}>추천인 ID</label>
+              <label htmlFor="reg-ref-id" className={styles.label}>추천인 E-Mail</label>
               <input
                 id="reg-ref-id"
                 type="text"
                 readOnly
                 className={`${styles.input} ${styles.inputReadonly}`}
-                value={referrerId ?? ''}
+                value={referrerEmail ?? ''}
                 placeholder="추천인 인증 후 자동 입력"
               />
             </div>

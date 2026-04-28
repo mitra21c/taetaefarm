@@ -4,9 +4,8 @@
 }
 
 .inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2.5rem 0 4rem;
+  width: 100%;
+  padding: 2.5rem 20px 4rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -19,6 +18,12 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .title {
@@ -50,6 +55,43 @@
 .yearSelect:focus {
   border-color: rgba(255, 255, 255, 0.35);
 }
+
+/* ── 검색 ── */
+.searchWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.6rem 2.5rem 0.6rem 1rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: #1e1e1e;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.searchInput::placeholder { color: #555555; }
+.searchInput:focus { border-color: rgba(255, 255, 255, 0.35); }
+
+.searchClear {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: #666666;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  line-height: 1;
+}
+
+.searchClear:hover { color: #aaaaaa; }
 
 /* ── 상태 메시지 ── */
 .stateMsg {
@@ -106,8 +148,9 @@
 /* ── 테이블 ── */
 .tableWrap {
   background: #1e1e1e;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
   overflow: auto;
 }
 
@@ -285,6 +328,24 @@
   border-color: rgba(239, 83, 80, 0.2);
 }
 
+/* ── 엑셀 다운로드 버튼 ── */
+.excelBtn {
+  padding: 0.45rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.excelBtn:hover:not(:disabled) { background: rgba(34, 197, 94, 0.22); }
+.excelBtn:disabled { opacity: 0.5; cursor: default; }
+
 /* ── 수정 버튼 ── */
 .saveBtn {
   padding: 0.25rem 0.75rem;
@@ -307,6 +368,42 @@
   color: #555555;
   border-color: rgba(255, 255, 255, 0.08);
   cursor: default;
+}
+
+/* ── 사용 승인 셀렉트 ── */
+.useSelect {
+  padding: 0.2rem 1.4rem 0.2rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23aaaaaa' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.4rem center;
+}
+
+.useSelectY {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.useSelectN {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+}
+
+.useY {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.useN {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
 }
 
 /* ── 반응형 ── */

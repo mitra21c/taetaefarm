@@ -10,9 +10,8 @@ export interface RegisterRequest {
   phone: string;
   address: string;
   post: string;
-  referrerId?: number;
-  referrerName?: string;
   referrerEmail?: string;
+  referrerName?: string;
   referrerPhone?: string;
 }
 
