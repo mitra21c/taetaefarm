@@ -383,7 +383,7 @@ async function initAdmin() {
     await pool.query(
       `INSERT INTO users (name, phone, email, address, post, role, pass, use)
        VALUES ($1, $2, $3, $4, $5, 'admin', $6, 'Y')`,
-      ['김민창', '010-5257-0412', 'mitra21c@naver.com',
+      ['김민창', '010-5257-0412', 'mitra21c@gmail.com',
        '광주광역시 광산구 수완로 73번길 40 대주피오레 602-306', '12345', encPass],
     );
     console.log('✅  기본 관리자 계정이 등록되었습니다.');
