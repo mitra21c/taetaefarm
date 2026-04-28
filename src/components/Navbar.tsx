@@ -74,11 +74,9 @@ export default function Navbar() {
               회원 정보
             </NavLink>
           )}
-          {isAuthenticated && user?.role === 'admin' && (
-            <NavLink to="/dev" className={navClass} onClick={() => setMenuOpen(false)}>
-              개발자모드
-            </NavLink>
-          )}
+          <NavLink to="/dev" className={navClass} onClick={() => setMenuOpen(false)}>
+            개발자모드
+          </NavLink>
         </div>
 
         <button
