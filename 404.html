@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // GitHub Pages SPA redirect
+      // Encodes the path into a query string so the main page can restore it
+      var path = window.location.pathname;
+      var base = '/taetaefarm';
+      var rest = path.replace(base, '') || '/';
+      window.location.replace(
+        base + '/?p=' + encodeURIComponent(rest) + window.location.hash
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
