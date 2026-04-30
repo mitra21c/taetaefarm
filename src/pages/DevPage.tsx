@@ -69,7 +69,7 @@ export default function DevPage() {
   const refreshToken  = localStorage.getItem('refreshToken') ?? '';
   const accessPayload = decodeJwt(accessToken);
   const refreshPayload = decodeJwt(refreshToken);
-  const apiBase = `http://${window.location.hostname}:8080/api`;
+  const apiBase = import.meta.env.VITE_API_BASE_URL ?? `http://${window.location.hostname}:8080/api`;
 
   const copy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);

@@ -25,7 +25,9 @@
 }
 
 .logoIcon {
-  font-size: 1.5rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  object-fit: contain;
 }
 
 .logoText {
@@ -142,6 +144,18 @@
   color: #ffffff;
 }
 
+/* ── Build Version ── */
+.buildVersion {
+  position: absolute;
+  right: 1rem;
+  bottom: 0.2rem;
+  font-size: 0.72rem;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  user-select: none;
+}
+
 /* ── Sub Menu Bar ── */
 .subMenuBar {
   display: flex;
@@ -235,5 +249,9 @@
 
   .hamburger {
     display: flex;
+  }
+
+  .buildVersion {
+    display: none;
   }
 }

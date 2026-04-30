@@ -41,7 +41,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename="/taetaefarm">
+      <BrowserRouter basename="/">
         <AuthProvider>
           <SubMenuProvider>
             <Routes>

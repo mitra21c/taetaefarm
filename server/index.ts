@@ -446,7 +446,11 @@ async function initAdmin() {
   }
 }
 
-app.listen(PORT, '0.0.0.0', async () => {
-  console.log(`✅  API 서버 실행 중 → http://localhost:${PORT}`);
-  await initAdmin();
-});
+export default app;
+
+if (!process.env.VERCEL) {
+  app.listen(PORT, '0.0.0.0', async () => {
+    console.log(`✅  API 서버 실행 중 → http://localhost:${PORT}`);
+    await initAdmin();
+  });
+}

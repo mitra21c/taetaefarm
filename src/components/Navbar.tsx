@@ -35,7 +35,7 @@ export default function Navbar() {
       {/* Title Bar */}
       <div className={styles.titleBar}>
         <Link to="/" className={styles.logo}>
-          <span className={styles.logoIcon}>🫐</span>
+          <img src="https://mitra21c.github.io/data/images/taetaefarm/taetaefarm/icon.png" alt="태태농장" className={styles.logoIcon} />
           <span className={styles.logoText}>태태농장</span>
         </Link>
 
@@ -63,6 +63,7 @@ export default function Navbar() {
 
       {/* Menu Bar */}
       <nav className={styles.menuBar}>
+        <span className={styles.buildVersion}>ver. {__BUILD_TIME__}</span>
         <div className={`${styles.navMenu} ${menuOpen ? styles.navMenuOpen : ''}`}>
           {NAV_ITEMS.map(item => (
             <NavLink key={item.to} to={item.to} className={navClass} onClick={() => setMenuOpen(false)}>

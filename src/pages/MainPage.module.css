@@ -1,4 +1,38 @@
-.empty {
-  min-height: calc(100vh - 104px - 80px);
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 104px);
   background: #121212;
+}
+
+.content {
+  flex: 1;
+}
+
+.farmInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+  background: #1a1a1a;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.farmIcon {
+  width: 4rem;
+  height: 4rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.farmDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.farmDetailRow {
+  font-size: 0.9rem;
+  color: #aaaaaa;
 }
