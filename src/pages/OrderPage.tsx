@@ -71,6 +71,7 @@ export default function OrderPage() {
   const [receiver, setReceiver] = useState<ReceiverForm>({ name: '', phone: '', address: '', zip: '' });
   const [sameAsOrderer, setSameAsOrderer] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [popup, setPopup] = useState<'smsError' | null>(null);
 
   const openOrder = async (product: Product) => {
     if (!user) return;
@@ -110,7 +111,7 @@ export default function OrderPage() {
     if (!selectedProduct || !user) return;
     setSubmitError('');
     try {
-      await createOrder({
+      const result = await createOrder({
         user_id: user.id,
         name: user.name,
         phone: ordererInfo.phone,
@@ -124,7 +125,11 @@ export default function OrderPage() {
         receiver_post: receiver.zip,
       });
       closeOrder();
-      alert(`${selectedProduct.name} 주문이 완료되었습니다.`);
+      if (result.smsError) {
+        setPopup('smsError');
+      } else {
+        alert(`${selectedProduct.name} 주문이 완료되었습니다.`);
+      }
     } catch {
       setSubmitError('주문 처리 중 오류가 발생했습니다. 관리자에게 문의하세요.');
     }
@@ -132,6 +137,19 @@ export default function OrderPage() {
 
   return (
     <main className={styles.main}>
+      {popup === 'smsError' && (
+        <div className={styles.modalOverlay} onClick={() => setPopup(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '22rem', textAlign: 'center' }}>
+            <p style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>!</p>
+            <h3 style={{ marginBottom: '0.75rem' }}>오류</h3>
+            <p style={{ marginBottom: '1.25rem', lineHeight: 1.6 }}>
+              에러가 발생하였습니다.<br />관리자에게 문의 하세요.
+            </p>
+            <button className={styles.cancelBtn} onClick={() => setPopup(null)}>확인</button>
+          </div>
+        </div>
+      )}
+
       <div className={styles.inner}>
 
         {!isAuthenticated && (

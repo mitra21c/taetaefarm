@@ -1,13 +1,26 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import sql from 'mssql';
 import jwt from 'jsonwebtoken';
 import CryptoJS from 'crypto-js';
+import { SolapiMessageService } from 'solapi';
 
 const app = express();
 const PORT = 8080;
 const ENCRYPTION_KEY = 'mitra21c';
 const JWT_SECRET = 'taetaefarm_jwt_secret_2024';
+
+const SOLAPI_API_KEY    = process.env.SOLAPI_API_KEY    ?? 'NCSXUJAHXFOKGSPJ';
+const SOLAPI_API_SECRET = process.env.SOLAPI_API_SECRET ?? '';
+const SOLAPI_SENDER     = process.env.SOLAPI_SENDER     ?? '';
+
+let solapiService: SolapiMessageService | null = null;
+function getSolapi() {
+  if (!SOLAPI_API_SECRET || !SOLAPI_SENDER) return null;
+  if (!solapiService) solapiService = new SolapiMessageService(SOLAPI_API_KEY, SOLAPI_API_SECRET);
+  return solapiService;
+}
 
 app.use(cors({ origin: '*' }));
 app.use(express.json());
@@ -130,11 +143,11 @@ app.post('/api/auth/verify-referrer', async (req, res) => {
 
 // 회원가입
 app.post('/api/auth/register', async (req, res) => {
-  const { name, email, password, phone, address, post, referrerEmail } =
+  const { name, email, password, phone, address, post, referrerEmail, referrerName } =
     req.body as {
       name: string; email: string; password: string;
       phone: string; address: string; post: string;
-      referrerEmail?: string;
+      referrerEmail?: string; referrerName?: string;
     };
   if (!name || !email || !password || !phone || !address || !post) {
     res.status(400).json({ message: '필수 항목을 모두 입력해 주세요.' });
@@ -152,7 +165,20 @@ app.post('/api/auth/register', async (req, res) => {
       .input('reference_email', sql.VarChar,  referrerEmail ?? null)
       .query(`INSERT INTO users (name, email, pass, phone, address, post, role, reference_email)
               VALUES (@name, @email, @pass, @phone, @address, @post, 'user', @reference_email)`);
-    res.status(201).json({ message: '회원가입이 완료되었습니다.' });
+
+    const solapi = getSolapi();
+    let smsError = false;
+    if (solapi) {
+      const smsText = `신규 회원 가입\n성명 : ${name.trim()}\n연락처 : ${phone.trim()}\ne-Mail : ${email.trim()}\n추천인 성명 : ${referrerName?.trim() || '없음'}`;
+      try {
+        await solapi.send({ to: '01052570412', from: SOLAPI_SENDER, text: smsText });
+      } catch (err) {
+        console.error('회원가입 알림 SMS 오류:', err);
+        smsError = true;
+      }
+    }
+
+    res.status(201).json({ message: '회원가입이 완료되었습니다.', smsError });
   } catch (err: any) {
     if (err.number === 2627 || err.number === 2601) {
       res.status(409).json({ message: '이미 등록된 이메일입니다.' });
@@ -200,9 +226,25 @@ app.patch('/api/users/:id', async (req, res) => {
     const result = await req2.query(
       `UPDATE users SET ${sets.join(', ')}, modified_at = GETDATE() WHERE id = @id`
     );
-    result.rowsAffected[0] === 0
-      ? res.status(404).json({ message: '사용자를 찾을 수 없습니다.' })
-      : res.json({ message: '수정되었습니다.' });
+    if (result.rowsAffected[0] === 0) {
+      res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
+      return;
+    }
+    if (use === 'Y') {
+      const phoneResult = await db.request()
+        .input('id', sql.Int, id)
+        .query(`SELECT phone FROM users WHERE id = @id`);
+      const phone: string | null = phoneResult.recordset[0]?.phone ?? null;
+      const solapi = getSolapi();
+      if (solapi && phone) {
+        solapi.send({
+          to: phone.replace(/-/g, ''),
+          from: SOLAPI_SENDER,
+          text: '가입 승인이 완료 되었습니다.\n태태팜 사이트(https://taetaefarm.vercel.app/farm)에 접속하여 로그인 하신 후 사용하시기 바랍니다.',
+        }).catch(err => console.error('승인 SMS 발송 오류:', err));
+      }
+    }
+    res.json({ message: '수정되었습니다.' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
@@ -367,7 +409,20 @@ app.post('/api/orders', async (req, res) => {
                  @order_item, @order_weight, @order_price,
                  @reference_email, @reference_name,
                  @receiver_name, @receiver_phone, @receiver_address, @receiver_post)`);
-    res.status(201).json({ message: '주문이 완료되었습니다.' });
+
+    const solapi = getSolapi();
+    let smsError = false;
+    if (solapi) {
+      const smsText = `신규 주문\n성명 : ${name}\n연락처 : ${phone}\ne-Mail : ${email}\n추천인 성명 : ${reference_name || '없음'}\n주문 항목(종류/무게/금액) : ${order_item} / ${order_weight}Kg / ${order_price.toLocaleString()}원`;
+      try {
+        await solapi.send({ to: '01052570412', from: SOLAPI_SENDER, text: smsText });
+      } catch (err) {
+        console.error('주문 알림 SMS 발송 오류:', err);
+        smsError = true;
+      }
+    }
+
+    res.status(201).json({ message: '주문이 완료되었습니다.', smsError });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
@@ -389,9 +444,29 @@ app.patch('/api/orders/:id/status', async (req, res) => {
       .input('delivery_status', sql.NVarChar, delivery_status)
       .input('id',              sql.Int,      id)
       .query(`UPDATE orders SET delivery_status = @delivery_status, modified_at = GETDATE() WHERE id = @id`);
-    result.rowsAffected[0] === 0
-      ? res.status(404).json({ message: '주문을 찾을 수 없습니다.' })
-      : res.json({ message: '상태가 변경되었습니다.' });
+    if (result.rowsAffected[0] === 0) {
+      res.status(404).json({ message: '주문을 찾을 수 없습니다.' });
+      return;
+    }
+
+    const orderResult = await db.request()
+      .input('id', sql.Int, id)
+      .query(`SELECT name, phone, email, order_item, order_weight, order_price, reference_name FROM orders WHERE id = @id`);
+    const o = orderResult.recordset[0];
+
+    const solapi = getSolapi();
+    let smsError = false;
+    if (solapi && o) {
+      const smsText = `주문 상태 변경\n구매자 성명 : ${o.name}\n구매자 e-Mail : ${o.email}\n상품 정보(종류/무게/금액) : ${o.order_item} / ${o.order_weight}Kg / ${o.order_price.toLocaleString()}원\n주문 상태 : ${delivery_status}`;
+      try {
+        await solapi.send({ to: o.phone.replace(/-/g, ''), from: SOLAPI_SENDER, text: smsText });
+      } catch (err) {
+        console.error('상태 변경 SMS 발송 오류:', err);
+        smsError = true;
+      }
+    }
+
+    res.json({ message: '상태가 변경되었습니다.', smsError });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
@@ -420,6 +495,91 @@ app.get('/api/orders', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+// ─────────────────────────── SMS ───────────────────────────
+
+// 단일 문자 발송
+app.post('/api/sms/send', async (req, res) => {
+  const { to, text } = req.body as { to: string; text: string };
+  if (!to || !text) {
+    res.status(400).json({ message: '수신번호와 메시지 내용을 입력해 주세요.' });
+    return;
+  }
+  const solapi = getSolapi();
+  if (!solapi) {
+    res.status(503).json({ message: 'SMS 서비스가 설정되지 않았습니다. SOLAPI_API_SECRET, SOLAPI_SENDER 환경변수를 확인해 주세요.' });
+    return;
+  }
+  try {
+    const result = await solapi.send({
+      to: to.replace(/-/g, ''),
+      from: SOLAPI_SENDER,
+      text,
+    });
+    res.json({ message: '발송되었습니다.', result });
+  } catch (err: any) {
+    console.error('SMS 발송 오류:', err);
+    res.status(500).json({ message: 'SMS 발송에 실패했습니다.', error: err.message });
+  }
+});
+
+// 대량 문자 발송
+app.post('/api/sms/send-bulk', async (req, res) => {
+  const { messages } = req.body as { messages: Array<{ to: string; text: string }> };
+  if (!Array.isArray(messages) || messages.length === 0) {
+    res.status(400).json({ message: '발송할 메시지 목록을 입력해 주세요.' });
+    return;
+  }
+  const solapi = getSolapi();
+  if (!solapi) {
+    res.status(503).json({ message: 'SMS 서비스가 설정되지 않았습니다. SOLAPI_API_SECRET, SOLAPI_SENDER 환경변수를 확인해 주세요.' });
+    return;
+  }
+  try {
+    const result = await solapi.send({
+      messages: messages.map(m => ({
+        to: m.to.replace(/-/g, ''),
+        from: SOLAPI_SENDER,
+        text: m.text,
+      })),
+    });
+    res.json({ message: `${messages.length}건 발송 요청되었습니다.`, result });
+  } catch (err: any) {
+    console.error('SMS 대량 발송 오류:', err);
+    res.status(500).json({ message: 'SMS 발송에 실패했습니다.', error: err.message });
+  }
+});
+
+// 회원 전체에게 문자 발송 (DB 기반)
+app.post('/api/sms/send-all-users', async (req, res) => {
+  const { text } = req.body as { text: string };
+  if (!text) {
+    res.status(400).json({ message: '메시지 내용을 입력해 주세요.' });
+    return;
+  }
+  const solapi = getSolapi();
+  if (!solapi) {
+    res.status(503).json({ message: 'SMS 서비스가 설정되지 않았습니다. SOLAPI_API_SECRET, SOLAPI_SENDER 환경변수를 확인해 주세요.' });
+    return;
+  }
+  try {
+    const db = await getPool();
+    const dbResult = await db.request()
+      .query(`SELECT name, phone FROM users WHERE [use] = 'Y' AND phone IS NOT NULL AND phone <> ''`);
+    const recipients: Array<{ name: string; phone: string }> = dbResult.recordset;
+    if (recipients.length === 0) {
+      res.status(404).json({ message: '발송 대상 회원이 없습니다.' });
+      return;
+    }
+    const result = await solapi.send({
+      messages: recipients.map(r => ({ to: r.phone.replace(/-/g, ''), from: SOLAPI_SENDER, text })),
+    });
+    res.json({ message: `${recipients.length}명에게 발송 요청되었습니다.`, result, recipients });
+  } catch (err: any) {
+    console.error('SMS 전체 발송 오류:', err);
+    res.status(500).json({ message: 'SMS 발송에 실패했습니다.', error: err.message });
   }
 });
 

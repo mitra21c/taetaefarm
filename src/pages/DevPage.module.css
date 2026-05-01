@@ -237,3 +237,127 @@
   color: #cccccc;
   vertical-align: middle;
 }
+
+/* ── SMS 전송 테스트 ── */
+.smsForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.smsRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.smsLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #888888;
+  width: 120px;
+  flex-shrink: 0;
+  padding-top: 0.45rem;
+}
+
+.smsInput {
+  flex: 1;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  color: #cccccc;
+  font-size: 0.88rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.smsInput:focus { border-color: rgba(251, 191, 36, 0.5); }
+
+.smsTextarea {
+  flex: 1;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  color: #cccccc;
+  font-size: 0.88rem;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+  line-height: 1.5;
+}
+
+.smsTextarea:focus { border-color: rgba(251, 191, 36, 0.5); }
+
+.smsBtnRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.smsCount {
+  font-size: 0.8rem;
+  color: #666666;
+}
+
+.smsSendBtn {
+  padding: 0.45rem 1.4rem;
+  border-radius: 10px;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.smsSendBtn:hover:not(:disabled) { background: rgba(251, 191, 36, 0.2); }
+.smsSendBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.smsOk  { margin: 0; font-size: 0.88rem; color: #4ade80; }
+.smsErr { margin: 0; font-size: 0.88rem; color: #f87171; }
+
+/* ── 공지 전송 이력 ── */
+.noticeHistory {
+  margin-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 1rem;
+}
+
+.noticeHistoryTitle {
+  font-size: 0.82rem;
+  color: #888888;
+  margin: 0 0 0.6rem;
+}
+
+.noticeTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.noticeTable th {
+  padding: 0.45rem 0.75rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #aaaaaa;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.noticeTable td {
+  padding: 0.4rem 0.75rem;
+  color: #cccccc;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.noticeTable tbody tr:last-child td { border-bottom: none; }
+.noticeTable tbody tr:hover { background: rgba(255, 255, 255, 0.03); }

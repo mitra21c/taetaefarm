@@ -54,6 +54,7 @@ export default function OrderStatusPage() {
   const [sortKey, setSortKey]         = useState<SortKey | null>(null);
   const [sortDir, setSortDir]         = useState<SortDir>('asc');
   const [search, setSearch]           = useState('');
+  const [popup, setPopup]             = useState<'smsError' | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated || !user) return;
@@ -103,11 +104,12 @@ export default function OrderStatusPage() {
   const handleSave = async (order: Order) => {
     const status = pendingStatus[order.id] ?? order.delivery_status;
     try {
-      await updateOrderStatus(order.id, status);
+      const result = await updateOrderStatus(order.id, status);
       setOrders(prev =>
         prev.map(o => o.id === order.id ? { ...o, delivery_status: status } : o)
       );
       setPendingStatus(prev => { const n = { ...prev }; delete n[order.id]; return n; });
+      if (result.smsError) setPopup('smsError');
     } catch {
       alert('수정 중 오류가 발생했습니다.');
     }
@@ -161,6 +163,24 @@ export default function OrderStatusPage() {
 
   return (
     <main className={styles.main}>
+      {popup === 'smsError' && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.45)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000 }}
+             onClick={() => setPopup(null)}>
+          <div style={{ background:'#fff', borderRadius:'0.75rem', padding:'2rem 1.75rem', maxWidth:'22rem', width:'90%', textAlign:'center', boxShadow:'0 8px 32px rgba(0,0,0,0.18)' }}
+               onClick={e => e.stopPropagation()}>
+            <p style={{ fontSize:'2rem', margin:'0 0 0.5rem' }}>⚠️</p>
+            <h3 style={{ margin:'0 0 0.75rem', fontSize:'1.1rem' }}>SMS 발송 오류</h3>
+            <p style={{ margin:'0 0 1.25rem', lineHeight:1.6, color:'#555' }}>
+              주문 상태 변경은 완료되었습니다.<br />SMS 발송에 실패하였습니다.<br />(관리자에게 문의 하세요.)
+            </p>
+            <button onClick={() => setPopup(null)}
+                    style={{ padding:'0.5rem 1.5rem', background:'#e53e3e', color:'#fff', border:'none', borderRadius:'0.375rem', cursor:'pointer', fontWeight:600 }}>
+              확인
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className={styles.inner}>
 
         {/* 툴바 */}

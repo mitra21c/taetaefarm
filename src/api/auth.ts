@@ -14,11 +14,12 @@ export const logout = async (): Promise<void> => {
   await axiosInstance.post('/auth/logout');
 };
 
-export const register = async (payload: RegisterRequest): Promise<void> => {
-  await axiosInstance.post('/auth/register', {
+export const register = async (payload: RegisterRequest): Promise<{ smsError: boolean }> => {
+  const { data } = await axiosInstance.post<{ message: string; smsError: boolean }>('/auth/register', {
     ...payload,
     password: encryptPassword(payload.password),
   });
+  return data;
 };
 
 export const checkDuplicateApi = async (
@@ -97,12 +98,14 @@ export interface OrderRequest {
   receiver_post: string;
 }
 
-export const createOrder = async (payload: OrderRequest): Promise<void> => {
-  await axiosInstance.post('/orders', payload);
+export const createOrder = async (payload: OrderRequest): Promise<{ smsError: boolean }> => {
+  const { data } = await axiosInstance.post<{ message: string; smsError: boolean }>('/orders', payload);
+  return data;
 };
 
-export const updateOrderStatus = async (id: number, delivery_status: string): Promise<void> => {
-  await axiosInstance.patch(`/orders/${id}/status`, { delivery_status });
+export const updateOrderStatus = async (id: number, delivery_status: string): Promise<{ smsError: boolean }> => {
+  const { data } = await axiosInstance.patch<{ message: string; smsError: boolean }>(`/orders/${id}/status`, { delivery_status });
+  return data;
 };
 
 export const getOrders = async (params?: { email?: string; year?: number }): Promise<any[]> => {

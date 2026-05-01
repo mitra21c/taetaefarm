@@ -25,6 +25,7 @@ type PopupKind =
   | 'referrerNotFound'
   | 'registerSuccess'
   | 'registerError'
+  | 'smsFailed'
   | null;
 
 const EMAIL_PATTERN = {
@@ -120,7 +121,7 @@ export default function LoginPage() {
   };
 
   const handlePopupClose = () => {
-    if (popup === 'registerSuccess') {
+    if (popup === 'registerSuccess' || popup === 'smsFailed') {
       reset();
       setPersonalInfoVerified(false);
       setReferrerVerified(false);
@@ -135,11 +136,11 @@ export default function LoginPage() {
   const onRegister = async (data: RegisterForm) => {
     const { passwordConfirm: _, ...rest } = data;
     try {
-      await register({
+      const result = await register({
         ...rest,
         referrerEmail: referrerEmail!,
       });
-      setPopup('registerSuccess');
+      setPopup(result.smsError ? 'smsFailed' : 'registerSuccess');
     } catch {
       setPopup('registerError');
     }
@@ -182,6 +183,15 @@ export default function LoginPage() {
               </>
             )}
             {popup === 'registerError' && (
+              <>
+                <div className={styles.popupIconError}>!</div>
+                <h3 className={styles.popupTitleError}>오류</h3>
+                <p className={styles.popupMsg}>
+                  에러가 발생하였습니다.<br />관리자에게 문의 하세요.
+                </p>
+              </>
+            )}
+            {popup === 'smsFailed' && (
               <>
                 <div className={styles.popupIconError}>!</div>
                 <h3 className={styles.popupTitleError}>오류</h3>
