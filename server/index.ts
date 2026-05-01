@@ -538,13 +538,13 @@ app.post('/api/sms/send-bulk', async (req, res) => {
     return;
   }
   try {
-    const result = await solapi.send({
-      messages: messages.map(m => ({
+    const result = await solapi.send(
+      messages.map(m => ({
         to: m.to.replace(/-/g, ''),
         from: SOLAPI_SENDER,
         text: m.text,
       })),
-    });
+    );
     res.json({ message: `${messages.length}건 발송 요청되었습니다.`, result });
   } catch (err: any) {
     console.error('SMS 대량 발송 오류:', err);
@@ -573,9 +573,9 @@ app.post('/api/sms/send-all-users', async (req, res) => {
       res.status(404).json({ message: '발송 대상 회원이 없습니다.' });
       return;
     }
-    const result = await solapi.send({
-      messages: recipients.map(r => ({ to: r.phone.replace(/-/g, ''), from: SOLAPI_SENDER, text })),
-    });
+    const result = await solapi.send(
+      recipients.map(r => ({ to: r.phone.replace(/-/g, ''), from: SOLAPI_SENDER, text })),
+    );
     res.json({ message: `${recipients.length}명에게 발송 요청되었습니다.`, result, recipients });
   } catch (err: any) {
     console.error('SMS 전체 발송 오류:', err);
