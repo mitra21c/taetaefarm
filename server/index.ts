@@ -49,34 +49,25 @@ function decryptPassword(encrypted: string): string {
 
 // 로그인
 app.post('/api/auth/login', async (req, res) => {
-  const { email, password } = req.body as { email: string; password: string };
-  if (!email || !password) {
-    res.status(400).json({ message: '이메일과 비밀번호를 입력해 주세요.' });
+  const { name, phone } = req.body as { name: string; phone: string };
+  if (!name || !phone) {
+    res.status(400).json({ message: '성명과 연락처를 입력해 주세요.' });
     return;
   }
   try {
+    const normalizedPhone = phone.replace(/-/g, '');
     const db = await getPool();
     const result = await db.request()
-      .input('email', sql.VarChar, email.trim().toLowerCase())
-      .query('SELECT TOP 1 id, name, email, pass, role, [use] FROM users WHERE email = @email');
+      .input('name',  sql.NVarChar, name.trim())
+      .input('phone', sql.VarChar,  normalizedPhone)
+      .query(`SELECT TOP 1 id, name, email, role, [use]
+              FROM users
+              WHERE name = @name AND REPLACE(phone, '-', '') = @phone`);
     if (result.recordset.length === 0) {
-      res.status(401).json({ message: '이메일 또는 비밀번호가 올바르지 않습니다.' });
+      res.status(401).json({ message: '성명 또는 연락처가 올바르지 않습니다.' });
       return;
     }
     const user = result.recordset[0];
-    let inputPlain: string;
-    let storedPlain: string;
-    try {
-      inputPlain  = decryptPassword(password);
-      storedPlain = decryptPassword(user.pass);
-    } catch {
-      res.status(401).json({ message: '이메일 또는 비밀번호가 올바르지 않습니다.' });
-      return;
-    }
-    if (!inputPlain || inputPlain !== storedPlain) {
-      res.status(401).json({ message: '이메일 또는 비밀번호가 올바르지 않습니다.' });
-      return;
-    }
     if (user.role !== 'admin' && user.use !== 'Y') {
       res.status(403).json({ message: '관리자 승인 대기 중입니다. 관리자에게 문의 하세요.' });
       return;

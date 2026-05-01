@@ -234,36 +234,30 @@ export default function LoginPage() {
         {tab === 'login' && (
           <form className={styles.form} onSubmit={submitLogin(onLogin)} noValidate>
             <div className={styles.fieldGroup}>
-              <label htmlFor="login-email" className={styles.label}>이메일</label>
+              <label htmlFor="login-name" className={styles.label}>성명</label>
               <input
-                id="login-email"
-                type="email"
-                placeholder="farm@example.com"
-                className={`${styles.input} ${loginErrors.email ? styles.inputError : ''}`}
-                {...regLogin('email', {
-                  required: '이메일을 입력해 주세요.',
-                  pattern: EMAIL_PATTERN,
-                })}
+                id="login-name"
+                type="text"
+                placeholder="홍길동"
+                className={`${styles.input} ${loginErrors.name ? styles.inputError : ''}`}
+                {...regLogin('name', { required: '성명을 입력해 주세요.' })}
               />
-              {loginErrors.email && (
-                <span className={styles.errorMsg}>{loginErrors.email.message}</span>
+              {loginErrors.name && (
+                <span className={styles.errorMsg}>{loginErrors.name.message}</span>
               )}
             </div>
 
             <div className={styles.fieldGroup}>
-              <label htmlFor="login-password" className={styles.label}>비밀번호</label>
+              <label htmlFor="login-phone" className={styles.label}>연락처</label>
               <input
-                id="login-password"
-                type="password"
-                placeholder="••••••••"
-                className={`${styles.input} ${loginErrors.password ? styles.inputError : ''}`}
-                {...regLogin('password', {
-                  required: '비밀번호를 입력해 주세요.',
-                  minLength: { value: 6, message: '비밀번호는 6자 이상이어야 합니다.' },
-                })}
+                id="login-phone"
+                type="tel"
+                placeholder="010-0000-0000"
+                className={`${styles.input} ${loginErrors.phone ? styles.inputError : ''}`}
+                {...regLogin('phone', { required: '연락처를 입력해 주세요.' })}
               />
-              {loginErrors.password && (
-                <span className={styles.errorMsg}>{loginErrors.password.message}</span>
+              {loginErrors.phone && (
+                <span className={styles.errorMsg}>{loginErrors.phone.message}</span>
               )}
             </div>
 
@@ -271,7 +265,7 @@ export default function LoginPage() {
               <div className={styles.serverError}>
                 {(loginMutation.error as any)?.response?.status === 403
                   ? '관리자 승인 대기 중입니다. 관리자에게 문의 하세요.'
-                  : '이메일 또는 비밀번호가 올바르지 않습니다.'}
+                  : '성명 또는 연락처가 올바르지 않습니다.'}
               </div>
             )}
 
