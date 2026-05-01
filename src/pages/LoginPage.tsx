@@ -256,11 +256,28 @@ export default function LoginPage() {
               )}
             </div>
 
+            <div className={styles.fieldGroup}>
+              <label htmlFor="login-password" className={styles.label}>비밀번호</label>
+              <input
+                id="login-password"
+                type="password"
+                placeholder="••••••••"
+                className={`${styles.input} ${loginErrors.password ? styles.inputError : ''}`}
+                {...regLogin('password', {
+                  required: '비밀번호를 입력해 주세요.',
+                  minLength: { value: 6, message: '비밀번호는 6자 이상이어야 합니다.' },
+                })}
+              />
+              {loginErrors.password && (
+                <span className={styles.errorMsg}>{loginErrors.password.message}</span>
+              )}
+            </div>
+
             {loginMutation.isError && (
               <div className={styles.serverError}>
                 {(loginMutation.error as any)?.response?.status === 403
                   ? '관리자 승인 대기 중입니다. 관리자에게 문의 하세요.'
-                  : '성명 또는 연락처가 올바르지 않습니다.'}
+                  : '성명, 연락처 또는 비밀번호가 올바르지 않습니다.'}
               </div>
             )}
 

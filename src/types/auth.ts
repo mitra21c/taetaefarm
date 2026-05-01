@@ -1,6 +1,7 @@
 export interface LoginRequest {
   name: string;
   phone: string;
+  password: string;
 }
 
 export interface RegisterRequest {

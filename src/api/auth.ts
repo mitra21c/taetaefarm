@@ -3,7 +3,10 @@ import type { LoginRequest, LoginResponse, RegisterRequest } from '../types/auth
 import { encryptPassword } from '../utils/crypto';
 
 export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {
-  const { data } = await axiosInstance.post<LoginResponse>('/auth/login', credentials);
+  const { data } = await axiosInstance.post<LoginResponse>('/auth/login', {
+    ...credentials,
+    password: encryptPassword(credentials.password),
+  });
   return data;
 };
 
