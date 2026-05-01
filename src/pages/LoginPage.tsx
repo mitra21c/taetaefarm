@@ -26,11 +26,6 @@ type PopupKind =
   | 'smsFailed'
   | null;
 
-const EMAIL_PATTERN = {
-  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  message: '올바른 이메일 형식이 아닙니다.',
-};
-
 const PHONE_PATTERN = /^01[0-9]-?[0-9]{3,4}-?[0-9]{4}$/;
 
 export default function LoginPage() {
