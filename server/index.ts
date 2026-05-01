@@ -96,20 +96,19 @@ app.post('/api/auth/logout', (_req, res) => {
   res.json({ message: '로그아웃 되었습니다.' });
 });
 
-// 이메일·전화번호 중복 확인
+// 전화번호 중복 확인
 app.post('/api/auth/check-duplicate', async (req, res) => {
-  const { email, phone } = req.body as { email: string; phone: string };
-  if (!email || !phone) {
-    res.status(400).json({ message: '이메일과 전화번호를 모두 입력해 주세요.' });
+  const { phone } = req.body as { phone: string };
+  if (!phone) {
+    res.status(400).json({ message: '전화번호를 입력해 주세요.' });
     return;
   }
   try {
     const normalizedPhone = phone.replace(/-/g, '');
     const db = await getPool();
     const result = await db.request()
-      .input('email', sql.VarChar, email.trim().toLowerCase())
       .input('phone', sql.VarChar, normalizedPhone)
-      .query(`SELECT TOP 1 id FROM users WHERE email = @email OR REPLACE(phone, '-', '') = @phone`);
+      .query(`SELECT TOP 1 id FROM users WHERE REPLACE(phone, '-', '') = @phone`);
     res.json({ isDuplicate: result.recordset.length > 0 });
   } catch (err) {
     console.error(err);
@@ -119,17 +118,18 @@ app.post('/api/auth/check-duplicate', async (req, res) => {
 
 // 추천인 인증
 app.post('/api/auth/verify-referrer', async (req, res) => {
-  const { name, email } = req.body as { name: string; email: string };
-  if (!name || !email) {
-    res.status(400).json({ message: '추천인 성명과 이메일을 입력해 주세요.' });
+  const { name, phone } = req.body as { name: string; phone: string };
+  if (!name || !phone) {
+    res.status(400).json({ message: '추천인 성명과 연락처를 입력해 주세요.' });
     return;
   }
   try {
+    const normalizedPhone = phone.replace(/-/g, '');
     const db = await getPool();
     const result = await db.request()
       .input('name', sql.NVarChar, name.trim())
-      .input('email', sql.VarChar, email.trim().toLowerCase())
-      .query(`SELECT TOP 1 email FROM users WHERE name = @name AND email = @email`);
+      .input('phone', sql.VarChar, normalizedPhone)
+      .query(`SELECT TOP 1 email FROM users WHERE name = @name AND REPLACE(phone, '-', '') = @phone`);
     if (result.recordset.length === 0) {
       res.json({ found: false });
     } else {
@@ -169,7 +169,7 @@ app.post('/api/auth/register', async (req, res) => {
     const solapi = getSolapi();
     let smsError = false;
     if (solapi) {
-      const smsText = `신규 회원 가입\n성명 : ${name.trim()}\n연락처 : ${phone.trim()}\ne-Mail : ${email.trim()}\n추천인 성명 : ${referrerName?.trim() || '없음'}`;
+      const smsText = `신규 회원 가입\n성명 : ${name.trim()}\n연락처 : ${phone.trim()}\n추천인 성명 : ${referrerName?.trim() || '없음'}`;
       try {
         await solapi.send({ to: '01052570412', from: SOLAPI_SENDER, text: smsText });
       } catch (err) {
@@ -413,7 +413,7 @@ app.post('/api/orders', async (req, res) => {
     const solapi = getSolapi();
     let smsError = false;
     if (solapi) {
-      const smsText = `신규 주문\n성명 : ${name}\n연락처 : ${phone}\ne-Mail : ${email}\n추천인 성명 : ${reference_name || '없음'}\n주문 항목(종류/무게/금액) : ${order_item} / ${order_weight}Kg / ${order_price.toLocaleString()}원`;
+      const smsText = `신규 주문\n성명 : ${name}\n연락처 : ${phone}\n추천인 성명 : ${reference_name || '없음'}\n주문 항목(종류/무게/금액) : ${order_item} / ${order_weight}Kg / ${order_price.toLocaleString()}원`;
       try {
         await solapi.send({ to: '01052570412', from: SOLAPI_SENDER, text: smsText });
       } catch (err) {
@@ -457,7 +457,7 @@ app.patch('/api/orders/:id/status', async (req, res) => {
     const solapi = getSolapi();
     let smsError = false;
     if (solapi && o) {
-      const smsText = `주문 상태 변경\n구매자 성명 : ${o.name}\n구매자 e-Mail : ${o.email}\n상품 정보(종류/무게/금액) : ${o.order_item} / ${o.order_weight}Kg / ${o.order_price.toLocaleString()}원\n주문 상태 : ${delivery_status}`;
+      const smsText = `주문 상태 변경\n구매자 성명 : ${o.name}\n상품 정보(종류/무게/금액) : ${o.order_item} / ${o.order_weight}Kg / ${o.order_price.toLocaleString()}원\n주문 상태 : ${delivery_status}`;
       try {
         await solapi.send({ to: o.phone.replace(/-/g, ''), from: SOLAPI_SENDER, text: smsText });
       } catch (err) {

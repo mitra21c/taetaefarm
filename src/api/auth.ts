@@ -23,20 +23,19 @@ export const register = async (payload: RegisterRequest): Promise<{ smsError: bo
 };
 
 export const checkDuplicateApi = async (
-  email: string,
   phone: string,
 ): Promise<{ isDuplicate: boolean }> => {
-  const { data } = await axiosInstance.post<{ isDuplicate: boolean }>('/auth/check-duplicate', { email, phone });
+  const { data } = await axiosInstance.post<{ isDuplicate: boolean }>('/auth/check-duplicate', { phone });
   return data;
 };
 
 export const verifyReferrerApi = async (
   name: string,
-  email: string,
+  phone: string,
 ): Promise<{ found: boolean; referrerEmail?: string }> => {
   const { data } = await axiosInstance.post<{ found: boolean; referrerEmail?: string }>(
     '/auth/verify-referrer',
-    { name, email },
+    { name, phone },
   );
   return data;
 };

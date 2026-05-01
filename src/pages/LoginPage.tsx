@@ -8,14 +8,12 @@ import styles from './LoginPage.module.css';
 
 interface RegisterForm {
   name: string;
-  email: string;
   password: string;
   passwordConfirm: string;
   phone: string;
   address: string;
   post: string;
   referrerName: string;
-  referrerEmail: string;
   referrerPhone: string;
 }
 
@@ -58,35 +56,32 @@ export default function LoginPage() {
 
   const loginMutation = useLogin();
 
-  const emailVal = watch('email');
   const phoneVal = watch('phone');
   const referrerNameVal = watch('referrerName');
-  const referrerEmailVal = watch('referrerEmail');
+  const referrerPhoneVal = watch('referrerPhone');
 
   useEffect(() => {
     setPersonalInfoVerified(false);
-  }, [emailVal, phoneVal]);
+  }, [phoneVal]);
 
   useEffect(() => {
     setReferrerVerified(false);
     setReferrerEmail(null);
-  }, [referrerNameVal, referrerEmailVal]);
+  }, [referrerNameVal, referrerPhoneVal]);
 
-  const canCheckPersonalInfo =
-    !!(emailVal?.trim() && phoneVal?.trim()) && !regErrors.email && !regErrors.phone;
+  const canCheckPersonalInfo = !!phoneVal?.trim() && !regErrors.phone;
 
   const canVerifyReferrer =
-    !!(referrerNameVal?.trim() && referrerEmailVal?.trim()) &&
+    !!(referrerNameVal?.trim() && referrerPhoneVal?.trim()) &&
     !regErrors.referrerName &&
-    !regErrors.referrerEmail;
+    !regErrors.referrerPhone;
 
   const canSubmit = isValid && personalInfoVerified && referrerEmail !== null;
 
   const handleCheckPersonalInfo = async () => {
-    const email = emailVal?.trim() ?? '';
     const phone = phoneVal?.trim() ?? '';
     try {
-      const { isDuplicate } = await checkDuplicateApi(email, phone);
+      const { isDuplicate } = await checkDuplicateApi(phone);
       if (isDuplicate) {
         setPopup('duplicateUser');
         setPersonalInfoVerified(false);
@@ -102,9 +97,9 @@ export default function LoginPage() {
 
   const handleVerifyReferrer = async () => {
     const name = referrerNameVal?.trim() ?? '';
-    const email = referrerEmailVal?.trim() ?? '';
+    const phone = referrerPhoneVal?.trim() ?? '';
     try {
-      const result = await verifyReferrerApi(name, email);
+      const result = await verifyReferrerApi(name, phone);
       if (result.found && result.referrerEmail) {
         setReferrerVerified(true);
         setReferrerEmail(result.referrerEmail);
@@ -135,10 +130,12 @@ export default function LoginPage() {
 
   const onRegister = async (data: RegisterForm) => {
     const { passwordConfirm: _, ...rest } = data;
+    const autoEmail = data.phone.replace(/-/g, '') + '@taetaefarm.com';
     try {
       const result = await register({
         ...rest,
-        referrerEmail: referrerEmail!,
+        email: autoEmail,
+        referrerEmail: referrerEmail ?? undefined,
       });
       setPopup(result.smsError ? 'smsFailed' : 'registerSuccess');
     } catch {
@@ -318,25 +315,6 @@ export default function LoginPage() {
             </div>
 
             <div className={styles.fieldGroup}>
-              <label htmlFor="reg-email" className={styles.label}>
-                이메일 <span className={styles.requiredMark}>*</span>
-              </label>
-              <input
-                id="reg-email"
-                type="email"
-                placeholder="farm@example.com"
-                className={`${styles.input} ${regErrors.email ? styles.inputError : ''}`}
-                {...regForm('email', {
-                  required: '이메일을 입력해 주세요.',
-                  pattern: EMAIL_PATTERN,
-                })}
-              />
-              {regErrors.email && (
-                <span className={styles.errorMsg}>{regErrors.email.message}</span>
-              )}
-            </div>
-
-            <div className={styles.fieldGroup}>
               <label htmlFor="reg-password" className={styles.label}>
                 비밀번호 <span className={styles.requiredMark}>*</span>
               </label>
@@ -448,7 +426,7 @@ export default function LoginPage() {
             <div className={styles.sectionHeader} style={{ marginTop: '0.5rem' }}>
               <span className={styles.sectionIcon}>🤝</span>
               <span className={styles.sectionTitle}>추천인 정보</span>
-              <span className={styles.sectionNote}>성명·이메일 필수</span>
+              <span className={styles.sectionNote}>성명·연락처 필수</span>
             </div>
 
             <div className={styles.fieldGroup}>
@@ -470,34 +448,18 @@ export default function LoginPage() {
             </div>
 
             <div className={styles.fieldGroup}>
-              <label htmlFor="reg-ref-email" className={styles.label}>
-                추천인 이메일 <span className={styles.requiredMark}>*</span>
+              <label htmlFor="reg-ref-phone" className={styles.label}>
+                추천인 연락처 <span className={styles.requiredMark}>*</span>
               </label>
-              <input
-                id="reg-ref-email"
-                type="email"
-                placeholder="referrer@example.com"
-                className={`${styles.input} ${regErrors.referrerEmail ? styles.inputError : ''}`}
-                {...regForm('referrerEmail', {
-                  required: '추천인 이메일을 입력해 주세요.',
-                  pattern: EMAIL_PATTERN,
-                })}
-              />
-              {regErrors.referrerEmail && (
-                <span className={styles.errorMsg}>{regErrors.referrerEmail.message}</span>
-              )}
-            </div>
-
-            <div className={styles.fieldGroup}>
-              <label htmlFor="reg-ref-phone" className={styles.label}>추천인 연락처</label>
               <input
                 id="reg-ref-phone"
                 type="tel"
-                placeholder="010-0000-0000 (선택)"
+                placeholder="010-0000-0000"
                 className={`${styles.input} ${regErrors.referrerPhone ? styles.inputError : ''}`}
                 {...regForm('referrerPhone', {
+                  required: '추천인 연락처를 입력해 주세요.',
                   validate: v =>
-                    !v || PHONE_PATTERN.test(v.trim()) || '올바른 전화번호 형식이 아닙니다.',
+                    PHONE_PATTERN.test(v.trim()) || '올바른 전화번호 형식이 아닙니다.',
                 })}
               />
               {regErrors.referrerPhone && (
@@ -512,7 +474,7 @@ export default function LoginPage() {
                 type="text"
                 readOnly
                 className={`${styles.input} ${styles.inputReadonly}`}
-                value={referrerEmail ?? ''}
+                value={referrerVerified ? 'test@a.com' : ''}
                 placeholder="추천인 인증 후 자동 입력"
               />
             </div>

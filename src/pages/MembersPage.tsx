@@ -10,7 +10,7 @@ import styles from './MembersPage.module.css';
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
-type SortKey = 'name' | 'phone' | 'email' | 'address' | 'role' | 'reference_email' | 'referrer_name' | 'use' | 'created_at';
+type SortKey = 'name' | 'phone' | 'address' | 'role' | 'referrer_name' | 'use' | 'created_at';
 type SortDir = 'asc' | 'desc';
 
 export default function MembersPage() {
@@ -226,10 +226,8 @@ export default function MembersPage() {
                   <th>순번</th>
                   {thSort('name',             '이름')}
                   {thSort('phone',            '전화번호')}
-                  {thSort('email',            'E-Mail')}
                   {thSort('address',          '주소/우편번호')}
                   {thSort('role',             '권한')}
-                  {thSort('reference_email',  '추천인 E-Mail')}
                   {thSort('referrer_name',    '추천인 성명/연락처')}
                   {thSort('use',              '승인')}
                   {thSort('created_at',       '생성일/수정일')}
@@ -249,7 +247,6 @@ export default function MembersPage() {
                       <td className={styles.tdNo}>{idx + 1}</td>
                       <td className={styles.tdBold}>{member.name}</td>
                       <td className={styles.tdSub}>{member.phone}</td>
-                      <td className={styles.tdEmail}>{member.email}</td>
 
                       {/* 주소/우편번호 2줄 */}
                       <td>
@@ -273,9 +270,6 @@ export default function MembersPage() {
                           <option value="admin">관리자</option>
                         </select>
                       </td>
-
-                      {/* 추천인 E-Mail */}
-                      <td className={styles.tdEmail}>{member.reference_email || '—'}</td>
 
                       {/* 추천인 성명/연락처 2줄 */}
                       <td>
