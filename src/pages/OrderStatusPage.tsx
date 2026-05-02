@@ -39,11 +39,17 @@ interface Order {
   reference_name: string;
   delivery_status: string;
   created_at: string;
+  orderer_role: string;
 }
 
 export default function OrderStatusPage() {
   const { user, isAuthenticated } = useAuthContext();
-  const isAdmin = user?.role === 'admin';
+  const isAdmin   = user?.role === 'admin';
+  const isManager = user?.role === 'manager';
+  const canSeeAll = isAdmin || isManager;
+
+  const canEdit = (order: Order) =>
+    isAdmin || (isManager && order.orderer_role !== 'admin');
 
   const [year, setYear]       = useState(CURRENT_YEAR);
   const [product, setProduct] = useState('');
@@ -60,7 +66,7 @@ export default function OrderStatusPage() {
     if (!isAuthenticated || !user) return;
     setLoading(true);
     setError('');
-    const params = isAdmin ? { year } : { email: user.email, year };
+    const params = canSeeAll ? { year } : { email: user.email, year };
     getOrders(params)
       .then(data => {
         setOrders(data);
@@ -250,13 +256,14 @@ export default function OrderStatusPage() {
                   {thSort('created_at',      '주문일')}
                   {thSort('reference_name',  '추천인')}
                   {thSort('delivery_status', '진행 상태')}
-                  {isAdmin && <th>수정</th>}
+                  {canSeeAll && <th>수정</th>}
                 </tr>
               </thead>
               <tbody>
                 {processed.map((order, idx) => {
                   const currentStatus = pendingStatus[order.id] ?? order.delivery_status;
                   const isDirty = !!pendingStatus[order.id];
+                  const editable = canEdit(order);
 
                   return (
                     <tr key={order.id}>
@@ -298,7 +305,7 @@ export default function OrderStatusPage() {
 
                       {/* 진행 상태 */}
                       <td className={styles.tdCenter}>
-                        {isAdmin ? (
+                        {editable ? (
                           <select
                             className={`${styles.statusSelect} ${styles[STATUS_CLASS[currentStatus] ?? '']}`}
                             value={currentStatus}
@@ -313,16 +320,18 @@ export default function OrderStatusPage() {
                         )}
                       </td>
 
-                      {/* 수정 버튼 (admin only) */}
-                      {isAdmin && (
+                      {/* 수정 버튼 (admin / manager) */}
+                      {canSeeAll && (
                         <td className={styles.tdCenter}>
-                          <button
-                            className={styles.saveBtn}
-                            disabled={!isDirty}
-                            onClick={() => handleSave(order)}
-                          >
-                            수정
-                          </button>
+                          {editable && (
+                            <button
+                              className={styles.saveBtn}
+                              disabled={!isDirty}
+                              onClick={() => handleSave(order)}
+                            >
+                              수정
+                            </button>
+                          )}
                         </td>
                       )}
                     </tr>

@@ -484,16 +484,20 @@ app.get('/api/orders', async (req, res) => {
   try {
     const db = await getPool();
     const req2 = db.request();
-    let query = `SELECT * FROM orders WHERE 1=1`;
+    let query = `
+      SELECT o.*, ISNULL(u.role, 'user') AS orderer_role
+      FROM orders o
+      LEFT JOIN users u ON u.id = o.user_id
+      WHERE 1=1`;
     if (email) {
       req2.input('email', sql.VarChar, email.trim().toLowerCase());
-      query += ` AND email = @email`;
+      query += ` AND o.email = @email`;
     }
     if (yearNum) {
       req2.input('year', sql.Int, yearNum);
-      query += ` AND YEAR(created_at) = @year`;
+      query += ` AND YEAR(o.created_at) = @year`;
     }
-    query += ` ORDER BY created_at DESC`;
+    query += ` ORDER BY o.created_at DESC`;
     const result = await req2.query(query);
     res.json(result.recordset);
   } catch (err) {
