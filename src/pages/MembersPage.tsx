@@ -15,7 +15,9 @@ type SortDir = 'asc' | 'desc';
 
 export default function MembersPage() {
   const { user, isAuthenticated } = useAuthContext();
-  const isAdmin = user?.role === 'admin';
+  const isAdmin    = user?.role === 'admin';
+  const isManager  = user?.role === 'manager';
+  const canAccess  = isAdmin || isManager;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -28,13 +30,13 @@ export default function MembersPage() {
 
   useEffect(() => {
     if (!isAuthenticated) navigate('/login');
-    else if (!isAdmin) navigate('/');
-  }, [isAuthenticated, isAdmin, navigate]);
+    else if (!canAccess) navigate('/');
+  }, [isAuthenticated, canAccess, navigate]);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['allUsers'],
     queryFn: getAllUsers,
-    enabled: isAdmin,
+    enabled: canAccess,
   });
 
   const handleSort = (key: SortKey) => {
@@ -44,14 +46,16 @@ export default function MembersPage() {
 
   const processed = useMemo(() => {
     if (!data) return [];
+    // manager는 role='user'인 회원만 표시
+    const visible = isAdmin ? data : data.filter(m => m.role === 'user');
     const q = search.trim().toLowerCase();
     let rows = q
-      ? data.filter(m =>
+      ? visible.filter(m =>
           [m.name, m.phone, m.email, m.address, m.post, m.role,
            m.reference_email ?? '', m.referrer_name ?? '', m.referrer_phone ?? '']
             .some(v => v.toLowerCase().includes(q))
         )
-      : data;
+      : visible;
     if (sortKey) {
       rows = [...rows].sort((a, b) => {
         const av = String((a as any)[sortKey] ?? '');
@@ -61,7 +65,7 @@ export default function MembersPage() {
       });
     }
     return rows;
-  }, [data, search, sortKey, sortDir]);
+  }, [data, isAdmin, search, sortKey, sortDir]);
 
   const updateMutation = useMutation({
     mutationFn: ({ id, role, use }: { id: number; role?: string; use?: string }) =>
@@ -162,7 +166,7 @@ export default function MembersPage() {
     </th>
   );
 
-  if (!isAdmin) return null;
+  if (!canAccess) return null;
 
   return (
     <div className={styles.container}>
@@ -175,7 +179,7 @@ export default function MembersPage() {
             회원 정보 현황
           </h1>
           <div className={styles.headerRight}>
-            {data && <span className={styles.totalBadge}>총 {data.length}명</span>}
+            {data && <span className={styles.totalBadge}>총 {processed.length}명</span>}
             <button className={styles.refreshBtn} onClick={() => refetch()} disabled={isLoading}>
               회원 정보
             </button>
