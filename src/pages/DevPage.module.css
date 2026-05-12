@@ -323,6 +323,70 @@
 .smsOk  { margin: 0; font-size: 0.88rem; color: #4ade80; }
 .smsErr { margin: 0; font-size: 0.88rem; color: #f87171; }
 
+/* ── 소켓 통신 테스트 ── */
+.socketAddrRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.socketField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 2;
+  min-width: 140px;
+}
+
+.socketPortField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 90px;
+}
+
+.socketConnectWrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding-bottom: 0;
+}
+
+.socketStatusOn  { font-size: 0.82rem; color: #4ade80; white-space: nowrap; }
+.socketStatusOff { font-size: 0.82rem; color: #f87171; white-space: nowrap; }
+
+.socketLog {
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.socketLogHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.75rem;
+  color: #888888;
+  font-weight: 600;
+}
+
+.socketLogBody {
+  padding: 0.5rem 0.75rem;
+  max-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-family: monospace;
+  font-size: 0.78rem;
+  color: #aaaaaa;
+}
+
 /* ── 공지 전송 이력 ── */
 .noticeHistory {
   margin-top: 1.25rem;

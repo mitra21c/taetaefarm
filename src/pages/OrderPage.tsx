@@ -1,54 +1,60 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useAuthContext } from '../context/AuthContext';
-import { getUserInfo, createOrder } from '../api/auth';
+import { getUserInfo, createOrder, getCropPrices, type CropPrice } from '../api/auth';
 import styles from './OrderPage.module.css';
 
 interface Product {
   name: string;
+  cropKey: string;
   weight: number;
   price: number;
   img: string;
   available: boolean;
 }
 
-const PRODUCTS: Product[] = [
-  {
-    name: '블루베리',
-    weight: 1,
-    price: 30000,
+const CROP_META: Record<string, { displayName: string; img: string }> = {
+  블루베리: {
+    displayName: '블루베리',
     img: 'https://mitra21c.github.io/data/images/taetaefarm/%EB%B8%94%EB%A3%A8%EB%B2%A0%EB%A6%AC_%EC%86%8C%EA%B0%9C.png',
-    available: true,
   },
-  {
-    name: '태추 단감',
-    weight: 10,
-    price: 50000,
+  태추: {
+    displayName: '태추 단감',
     img: 'https://mitra21c.github.io/data/images/taetaefarm/%ED%83%9C%EC%B6%94_%EC%86%8C%EA%B0%9C.png',
-    available: false,
   },
-  {
-    name: '대봉',
-    weight: 10,
-    price: 50000,
+  대봉: {
+    displayName: '대봉',
     img: 'https://mitra21c.github.io/data/images/taetaefarm/%EB%8C%80%EB%B4%89_%EC%86%8C%EA%B0%9C.png',
-    available: false,
   },
-  {
-    name: '감 말랭이',
-    weight: 10,
-    price: 50000,
+  '감 말랭이': {
+    displayName: '감 말랭이',
     img: 'https://mitra21c.github.io/data/images/taetaefarm/%EA%B0%90%EB%A7%90%EB%9E%AD%EC%9D%B4_%EC%86%8C%EA%B0%9C.png',
-    available: false,
   },
-  {
-    name: '울금',
-    weight: 10,
-    price: 50000,
+  울금: {
+    displayName: '울금',
     img: 'https://mitra21c.github.io/data/images/taetaefarm/%EC%9A%B8%EA%B8%88_%EC%86%8C%EA%B0%9C.png',
-    available: false,
   },
-];
+};
+
+const CROP_ORDER = ['블루베리', '태추', '대봉', '감 말랭이', '울금'];
+
+function buildProducts(prices: CropPrice[]): Product[] {
+  const map = new Map(prices.map(p => [p.crop_name, p]));
+  return CROP_ORDER.flatMap(key => {
+    const p = map.get(key);
+    const meta = CROP_META[key];
+    if (!p || !meta) return [];
+    return [{
+      cropKey: key,
+      name: meta.displayName,
+      weight: p.weight,
+      price: p.price,
+      img: meta.img,
+      available: p.available === 'Y',
+    }];
+  });
+}
 
 interface OrdererInfo {
   phone: string;
@@ -65,6 +71,14 @@ interface ReceiverForm {
 
 export default function OrderPage() {
   const { user, isAuthenticated } = useAuthContext();
+
+  const { data: cropPrices, isLoading: pricesLoading } = useQuery({
+    queryKey: ['crop-prices'],
+    queryFn: getCropPrices,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const products: Product[] = cropPrices ? buildProducts(cropPrices) : [];
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [ordererInfo, setOrdererInfo] = useState<OrdererInfo>({ phone: '', address: '', post: '' });
@@ -159,8 +173,12 @@ export default function OrderPage() {
           </div>
         )}
 
+        {pricesLoading && (
+          <p style={{ color: '#888', textAlign: 'center', padding: '2rem 0' }}>상품 정보를 불러오는 중…</p>
+        )}
+
         <div className={styles.grid}>
-          {PRODUCTS.map(product => (
+          {products.map(product => (
             <div
               key={product.name}
               className={`${styles.card} ${!product.available ? styles.cardDisabled : ''}`}

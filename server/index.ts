@@ -506,6 +506,89 @@ app.get('/api/orders', async (req, res) => {
   }
 });
 
+// ─────────────────────────── CROP PRICES ───────────────────────────
+
+const CROP_NAMES = ['블루베리', '태추', '대봉', '울금', '감 말랭이'];
+
+async function ensureCropPricesTable() {
+  const db = await getPool();
+  await db.request().query(`
+    IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='crop_prices' AND xtype='U')
+    CREATE TABLE crop_prices (
+      crop_name NVARCHAR(50) PRIMARY KEY,
+      weight    FLOAT        NOT NULL DEFAULT 1,
+      price     INT          NOT NULL DEFAULT 10000,
+      available CHAR(1)      NOT NULL DEFAULT 'N',
+      modified_at DATETIME DEFAULT GETDATE()
+    )
+  `);
+  for (const name of CROP_NAMES) {
+    await db.request()
+      .input('name', sql.NVarChar, name)
+      .query(`
+        IF NOT EXISTS (SELECT 1 FROM crop_prices WHERE crop_name = @name)
+        INSERT INTO crop_prices (crop_name, weight, price, available)
+        VALUES (@name, 1, 10000, 'N')
+      `);
+  }
+}
+
+app.get('/api/crop-prices', async (_req, res) => {
+  try {
+    await ensureCropPricesTable();
+    const db = await getPool();
+    const result = await db.request().query(
+      `SELECT crop_name, weight, price, available FROM crop_prices`
+    );
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+app.put('/api/crop-prices', async (req, res) => {
+  const token = req.headers.authorization?.startsWith('Bearer ')
+    ? req.headers.authorization.slice(7) : null;
+  if (!token) { res.status(401).json({ message: '인증이 필요합니다.' }); return; }
+  let role: string;
+  try {
+    const payload = jwt.verify(token, JWT_SECRET) as { role?: string };
+    role = payload.role ?? '';
+  } catch {
+    res.status(401).json({ message: '유효하지 않은 토큰입니다.' }); return;
+  }
+  if (role !== 'admin' && role !== 'manager') {
+    res.status(403).json({ message: '권한이 없습니다.' }); return;
+  }
+  const { prices } = req.body as {
+    prices: Array<{ crop_name: string; weight: number; price: number; available: 'Y' | 'N' }>;
+  };
+  if (!Array.isArray(prices) || prices.length === 0) {
+    res.status(400).json({ message: '잘못된 요청입니다.' }); return;
+  }
+  try {
+    await ensureCropPricesTable();
+    const db = await getPool();
+    for (const p of prices) {
+      await db.request()
+        .input('crop_name', sql.NVarChar, p.crop_name)
+        .input('weight',    sql.Float,    p.weight)
+        .input('price',     sql.Int,      p.price)
+        .input('available', sql.Char(1),  p.available)
+        .query(`
+          UPDATE crop_prices
+          SET weight = @weight, price = @price, available = @available, modified_at = GETDATE()
+          WHERE crop_name = @crop_name
+        `);
+    }
+    res.json({ message: '저장되었습니다.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
 // ─────────────────────────── SMS ───────────────────────────
 
 // 단일 문자 발송
@@ -591,6 +674,36 @@ app.post('/api/sms/send-all-users', async (req, res) => {
   }
 });
 
+// ─────────────────────────── SOCKET TEST ───────────────────────────
+
+import net from 'net';
+import fs  from 'fs';
+import { WebSocketServer } from 'ws';
+
+function windowsHostIp(): string {
+  try {
+    const m = fs.readFileSync('/etc/resolv.conf', 'utf8').match(/nameserver\s+([\d.]+)/);
+    return m ? m[1] : '127.0.0.1';
+  } catch {
+    return '127.0.0.1';
+  }
+}
+
+function resolveIp(ip: string): string {
+  return (ip === 'localhost' || ip === '127.0.0.1') ? windowsHostIp() : ip;
+}
+
+function socketErrMsg(e: NodeJS.ErrnoException): string {
+  switch (e.code) {
+    case 'ECONNREFUSED': return `연결 거부됨 — ${e.address}:${e.port} 포트가 닫혀 있습니다`;
+    case 'ETIMEDOUT':    return '타임아웃 — 응답이 없습니다';
+    case 'ENOTFOUND':    return `호스트를 찾을 수 없습니다 (${e.hostname ?? e.message})`;
+    case 'ENETUNREACH':  return '네트워크 도달 불가';
+    case 'ECONNRESET':   return '연결이 원격에서 끊겼습니다';
+    default:             return e.message;
+  }
+}
+
 // ─────────────────────────── INIT ───────────────────────────
 
 async function initAdmin() {
@@ -617,8 +730,33 @@ async function initAdmin() {
 export default app;
 
 if (!process.env.VERCEL) {
-  app.listen(PORT, '0.0.0.0', async () => {
+  const httpServer = app.listen(PORT, '0.0.0.0', async () => {
     console.log(`✅  API 서버 실행 중 → http://localhost:${PORT}`);
     await initAdmin();
+  });
+
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws/socket-proxy' });
+
+  wss.on('connection', (ws, req) => {
+    const params = new URL(req.url!, `http://localhost`).searchParams;
+    const ip     = resolveIp(params.get('ip')   ?? '');
+    const port   = parseInt(params.get('port')  ?? '0', 10);
+
+    if (!ip || !port) { ws.close(1008, '필수 파라미터 누락'); return; }
+
+    const tcp = new net.Socket();
+
+    const send = (msg: object) => {
+      if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(msg));
+    };
+
+    tcp.connect(port, ip, () => send({ type: 'connected' }));
+    tcp.on('data',  chunk => send({ type: 'data',   payload: chunk.toString() }));
+    tcp.on('error', e     => { send({ type: 'error', message: socketErrMsg(e) }); ws.close(); });
+    tcp.on('close', ()    => { send({ type: 'closed' }); ws.close(); });
+
+    ws.on('message', msg  => { if (tcp.writable) tcp.write(msg.toString()); });
+    ws.on('close',   ()   => tcp.destroy());
+    ws.on('error',   ()   => tcp.destroy());
   });
 }

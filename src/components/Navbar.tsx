@@ -70,7 +70,12 @@ export default function Navbar() {
               {item.label}
             </NavLink>
           ))}
-          {isAuthenticated && user?.role === 'admin' && (
+          {isAuthenticated && (user?.role === 'admin' || user?.role === 'manager') && (
+            <NavLink to="/crop-price" className={navClass} onClick={() => setMenuOpen(false)}>
+              작물 가격
+            </NavLink>
+          )}
+          {isAuthenticated && (user?.role === 'admin' || user?.role === 'manager') && (
             <NavLink to="/members" className={navClass} onClick={() => setMenuOpen(false)}>
               회원 정보
             </NavLink>

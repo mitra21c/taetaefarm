@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
 import styles from './DevPage.module.css';
@@ -69,6 +69,47 @@ export default function DevPage() {
   const [noticeStatus,  setNoticeStatus]  = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
   const [noticeMessage, setNoticeMessage] = useState('');
   const [noticeHistory, setNoticeHistory] = useState<Array<{ name: string; phone: string }>>([]);
+
+  const wsRef = useRef<WebSocket | null>(null);
+  const [socketIp,        setSocketIp]        = useState('192.168.0.45');
+  const [socketPort,      setSocketPort]      = useState('9000');
+  const [socketData,      setSocketData]      = useState('');
+  const [socketConnecting,setSocketConnecting]= useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [socketLog,       setSocketLog]       = useState<string[]>([]);
+
+  useEffect(() => () => { wsRef.current?.close(); }, []);
+
+  const addLog = (msg: string) =>
+    setSocketLog(prev => [`[${new Date().toLocaleTimeString('ko-KR')}] ${msg}`, ...prev]);
+
+  const toggleConnect = () => {
+    if (socketConnected || wsRef.current) {
+      wsRef.current?.close();
+      return;
+    }
+    setSocketConnecting(true);
+    addLog(`연결 중… ${socketIp}:${socketPort}`);
+    const ws = new WebSocket(
+      `ws://${window.location.hostname}:8080/ws/socket-proxy?ip=${encodeURIComponent(socketIp)}&port=${encodeURIComponent(socketPort)}`
+    );
+    wsRef.current = ws;
+    ws.onmessage = (e) => {
+      const msg = JSON.parse(e.data) as { type: string; payload?: string; message?: string };
+      if      (msg.type === 'connected') { setSocketConnected(true);  setSocketConnecting(false); addLog('연결 성공'); }
+      else if (msg.type === 'data')      { addLog(`수신: ${msg.payload}`); }
+      else if (msg.type === 'error')     { setSocketConnected(false); setSocketConnecting(false); addLog(`오류: ${msg.message}`); }
+      else if (msg.type === 'closed')    { setSocketConnected(false); setSocketConnecting(false); addLog('연결 종료'); }
+    };
+    ws.onclose = () => { setSocketConnected(false); setSocketConnecting(false); wsRef.current = null; addLog('연결 해제'); };
+    ws.onerror = () => { setSocketConnected(false); setSocketConnecting(false); addLog('WebSocket 오류'); };
+  };
+
+  const sendSocket = () => {
+    if (!socketConnected || !socketData.trim() || !wsRef.current) return;
+    wsRef.current.send(socketData);
+    addLog(`전송: ${socketData}`);
+  };
 
   if (!isAuthenticated || !isAdmin) {
     navigate('/');
@@ -286,6 +327,77 @@ export default function DevPage() {
             </table>
           </div>
         )}
+      </section>
+
+      {/* 소켓 통신 테스트 */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>소켓 통신 테스트</h2>
+        <div className={styles.smsForm}>
+          <div className={styles.socketAddrRow}>
+            <div className={styles.socketField}>
+              <label className={styles.smsLabel}>IP</label>
+              <input
+                className={styles.smsInput}
+                placeholder="192.168.0.1"
+                value={socketIp}
+                onChange={e => setSocketIp(e.target.value)}
+              />
+            </div>
+            <div className={styles.socketPortField}>
+              <label className={styles.smsLabel}>Port</label>
+              <input
+                className={styles.smsInput}
+                type="number"
+                placeholder="8080"
+                value={socketPort}
+                onChange={e => setSocketPort(e.target.value)}
+              />
+            </div>
+            <div className={styles.socketConnectWrap}>
+              <button
+                className={styles.smsSendBtn}
+                onClick={toggleConnect}
+                disabled={socketConnecting || (!socketConnected && (!socketIp.trim() || !socketPort.trim()))}
+              >
+                {socketConnecting ? '연결 중…' : socketConnected ? '연결 해제' : '연결'}
+              </button>
+              {socketConnected && <span className={styles.socketStatusOn}>● 연결됨</span>}
+            </div>
+          </div>
+
+          <div className={styles.smsRow}>
+            <label className={styles.smsLabel}>전송 데이터</label>
+            <textarea
+              className={styles.smsTextarea}
+              placeholder="전송할 데이터를 입력하세요."
+              value={socketData}
+              onChange={e => setSocketData(e.target.value)}
+              rows={3}
+            />
+          </div>
+
+          <div className={styles.smsBtnRow}>
+            <button
+              className={styles.smsSendBtn}
+              onClick={sendSocket}
+              disabled={!socketConnected || !socketData.trim()}
+            >
+              전송
+            </button>
+          </div>
+
+          {socketLog.length > 0 && (
+            <div className={styles.socketLog}>
+              <div className={styles.socketLogHeader}>
+                <span>로그</span>
+                <button className={styles.copyBtn} onClick={() => setSocketLog([])}>지우기</button>
+              </div>
+              <div className={styles.socketLogBody}>
+                {socketLog.map((line, i) => <div key={i}>{line}</div>)}
+              </div>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* 환경 정보 */}

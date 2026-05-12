@@ -13,6 +13,7 @@ import CropsPage from './pages/CropsPage';
 import OrderPage from './pages/OrderPage';
 import OrderStatusPage from './pages/OrderStatusPage';
 import MarketPricePage from './pages/MarketPricePage';
+import CropPricePage from './pages/CropPricePage';
 import DevPage from './pages/DevPage';
 import styles from './App.module.css';
 
@@ -54,6 +55,7 @@ export default function App() {
               <Route path="/order" element={<Layout><OrderPage /></Layout>} />
               <Route path="/order-status" element={<Layout><OrderStatusPage /></Layout>} />
               <Route path="/market-price" element={<Layout><MarketPricePage /></Layout>} />
+              <Route path="/crop-price" element={<Layout><CropPricePage /></Layout>} />
               <Route path="/dev" element={<Layout><DevPage /></Layout>} />
             </Routes>
           </SubMenuProvider>

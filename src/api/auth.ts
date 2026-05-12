@@ -111,3 +111,19 @@ export const getOrders = async (params?: { email?: string; year?: number }): Pro
   const { data } = await axiosInstance.get('/orders', { params });
   return data;
 };
+
+export interface CropPrice {
+  crop_name: string;
+  weight: number;
+  price: number;
+  available: 'Y' | 'N';
+}
+
+export const getCropPrices = async (): Promise<CropPrice[]> => {
+  const { data } = await axiosInstance.get<CropPrice[]>('/crop-prices');
+  return data;
+};
+
+export const saveCropPrices = async (prices: CropPrice[]): Promise<void> => {
+  await axiosInstance.put('/crop-prices', { prices });
+};
