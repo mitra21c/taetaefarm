@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL
-  ?? `http://${window.location.hostname}:8080/api`;
+// 우선순위: VITE_API_BASE_URL → 개발 서버(:8080) → 같은 도메인의 /api (Vercel)
+export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL
+  || (import.meta.env.DEV ? `http://${window.location.hostname}:8080/api` : '/api');
+const BASE_URL = API_BASE_URL;
 
 export const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -32,7 +34,7 @@ axiosInstance.interceptors.response.use(
         } catch {
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
-          window.location.href = '/login';
+          window.location.href = `${import.meta.env.BASE_URL}login`;
         }
       }
     }

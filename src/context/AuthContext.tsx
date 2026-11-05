@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const logout = () => {
       clearAuth();
-      window.location.href = '/login';
+      window.location.href = `${import.meta.env.BASE_URL}login`;
     };
 
     const reset = () => {

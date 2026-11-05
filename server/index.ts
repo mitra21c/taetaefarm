@@ -8,16 +8,24 @@ import { SolapiMessageService } from 'solapi';
 
 const app = express();
 const PORT = 8080;
-const ENCRYPTION_KEY = 'mitra21c';
-const JWT_SECRET = 'taetaefarm_jwt_secret_2024';
+// 필수 환경변수: 없으면 서버 시작 시 바로 오류를 낸다 (server/.env 또는 Vercel 환경변수)
+function requireEnv(name: string): string {
+  const v = process.env[name];
+  if (!v) throw new Error(`환경변수 ${name} 가 설정되지 않았습니다. server/.env.example 을 참고하세요.`);
+  return v;
+}
 
-const SOLAPI_API_KEY    = process.env.SOLAPI_API_KEY    ?? 'NCSXUJAHXFOKGSPJ';
+// 클라이언트(src/utils/crypto.ts)와 같은 값을 써야 하며, 브라우저 번들에 포함되므로 비밀값이 아니다.
+const ENCRYPTION_KEY = 'mitra21c';
+const JWT_SECRET = requireEnv('JWT_SECRET');
+
+const SOLAPI_API_KEY    = process.env.SOLAPI_API_KEY    ?? '';
 const SOLAPI_API_SECRET = process.env.SOLAPI_API_SECRET ?? '';
 const SOLAPI_SENDER     = process.env.SOLAPI_SENDER     ?? '';
 
 let solapiService: SolapiMessageService | null = null;
 function getSolapi() {
-  if (!SOLAPI_API_SECRET || !SOLAPI_SENDER) return null;
+  if (!SOLAPI_API_KEY || !SOLAPI_API_SECRET || !SOLAPI_SENDER) return null;
   if (!solapiService) solapiService = new SolapiMessageService(SOLAPI_API_KEY, SOLAPI_API_SECRET);
   return solapiService;
 }
@@ -26,11 +34,11 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 const dbConfig: sql.config = {
-  server: 'orikio.iptime.org',
-  port: 1433,
-  user: 'sa',
-  password: '@swe7410',
-  database: 'taetae_db',
+  server: requireEnv('DB_SERVER'),
+  port: parseInt(process.env.DB_PORT ?? '1433', 10),
+  user: requireEnv('DB_USER'),
+  password: requireEnv('DB_PASSWORD'),
+  database: requireEnv('DB_NAME'),
   options: { encrypt: false, trustServerCertificate: true },
 };
 
@@ -89,6 +97,37 @@ app.post('/api/auth/login', async (req, res) => {
     const accessToken  = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
     const refreshToken = jwt.sign({ sub: String(user.id) }, JWT_SECRET, { expiresIn: '30d' });
     res.json({ accessToken, refreshToken, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+// 토큰 갱신 (refreshToken → 새 accessToken)
+app.post('/api/auth/refresh', async (req, res) => {
+  const { refreshToken } = (req.body ?? {}) as { refreshToken?: string };
+  if (!refreshToken) { res.status(400).json({ message: 'refreshToken 이 필요합니다.' }); return; }
+  let userId: string;
+  try {
+    const payload = jwt.verify(refreshToken, JWT_SECRET) as { sub?: string };
+    if (!payload.sub) throw new Error('sub 없음');
+    userId = payload.sub;
+  } catch {
+    res.status(401).json({ message: '유효하지 않은 토큰입니다. 다시 로그인해 주세요.' }); return;
+  }
+  try {
+    const db = await getPool();
+    const result = await db.request()
+      .input('id', sql.Int, parseInt(userId, 10))
+      .query('SELECT TOP 1 id, name, email, role, [use] FROM users WHERE id = @id');
+    const user = result.recordset[0];
+    // 탈퇴했거나 승인이 취소된 회원은 갱신하지 않는다 (로그인 규칙과 동일)
+    if (!user || (user.role !== 'admin' && user.use !== 'Y')) {
+      res.status(401).json({ message: '다시 로그인해 주세요.' }); return;
+    }
+    const payload = { sub: String(user.id), email: user.email, name: user.name, role: user.role };
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ accessToken });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
@@ -711,7 +750,12 @@ async function initAdmin() {
     const db = await getPool();
     const result = await db.request().query('SELECT COUNT(*) AS cnt FROM users');
     if (parseInt(result.recordset[0].cnt, 10) > 0) return;
-    const encPass = CryptoJS.AES.encrypt('Rlaalsckd77!', ENCRYPTION_KEY).toString();
+    const adminPassword = process.env.ADMIN_INIT_PASSWORD;
+    if (!adminPassword) {
+      console.warn('⚠️  users 테이블이 비어 있지만 ADMIN_INIT_PASSWORD 가 없어 기본 관리자 계정을 만들지 않았습니다.');
+      return;
+    }
+    const encPass = CryptoJS.AES.encrypt(adminPassword, ENCRYPTION_KEY).toString();
     await db.request()
       .input('name',    sql.NVarChar, '김민창')
       .input('phone',   sql.VarChar,  '010-5257-0412')

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
+import { API_BASE_URL } from '../api/axiosInstance';
 import styles from './DevPage.module.css';
 
 function decodeJwt(token: string) {
@@ -120,7 +121,7 @@ export default function DevPage() {
   const refreshToken  = localStorage.getItem('refreshToken') ?? '';
   const accessPayload = decodeJwt(accessToken);
   const refreshPayload = decodeJwt(refreshToken);
-  const apiBase = import.meta.env.VITE_API_BASE_URL ?? `http://${window.location.hostname}:8080/api`;
+  const apiBase = API_BASE_URL;
 
   const copy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);

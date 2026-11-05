@@ -11,7 +11,8 @@ function buildTime() {
 export default defineConfig({
   plugins: [react()],
   define: { __BUILD_TIME__: JSON.stringify(buildTime()) },
-  base: '/',
+  // GitHub Pages(https://mitra21c.github.io/taetaefarm/)는 하위 경로, Vercel·로컬은 루트
+  base: process.env.GITHUB_PAGES ? '/taetaefarm/' : '/',
   server: {
     host: '0.0.0.0',
     port: 5173,
