@@ -1,13 +1,13 @@
 .main {
   min-height: 100vh;
   background: #121212;
-  padding-top: 64px;
+  padding-top: 0;
 }
 
 .inner {
   max-width: 860px;
   margin: 0 auto;
-  padding: 3rem 2rem 4rem;
+  padding: 1rem 1rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.75rem;

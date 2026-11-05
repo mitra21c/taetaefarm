@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AuthProvider } from './context/AuthContext';
@@ -15,6 +15,7 @@ import OrderStatusPage from './pages/OrderStatusPage';
 import MarketPricePage from './pages/MarketPricePage';
 import CropPricePage from './pages/CropPricePage';
 import DevPage from './pages/DevPage';
+import MainPage from './pages/MainPage';
 import styles from './App.module.css';
 
 const queryClient = new QueryClient({
@@ -46,7 +47,7 @@ export default function App() {
         <AuthProvider>
           <SubMenuProvider>
             <Routes>
-              <Route path="/" element={<Navigate to="/farm" replace />} />
+              <Route path="/" element={<Layout><MainPage /></Layout>} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/mypage" element={<Layout><MyPage /></Layout>} />
               <Route path="/members" element={<Layout><MembersPage /></Layout>} />

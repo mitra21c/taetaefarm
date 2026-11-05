@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 55%, #242424 100%);
-  padding: 2rem 1rem;
+  padding: 1rem 1rem 1.5rem;
 }
 
 .card {

@@ -75,6 +75,9 @@ export default function Navbar() {
               작물 가격
             </NavLink>
           )}
+          <NavLink to="/market-price" className={navClass} onClick={() => setMenuOpen(false)}>
+            가락동 도매 시장
+          </NavLink>
           {isAuthenticated && (user?.role === 'admin' || user?.role === 'manager') && (
             <NavLink to="/members" className={navClass} onClick={() => setMenuOpen(false)}>
               회원 정보

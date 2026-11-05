@@ -10,7 +10,7 @@ export default function Footer() {
           className={styles.icon}
         />
         <div className={styles.details}>
-          <p className={styles.line}>주소 : 전라남도 장성군 삼서면 수해리</p>
+          <p className={styles.line}>주소 : 전라남도 장성군</p>
           <p className={styles.line}>연락처 : mitra21c@naver.com</p>
         </div>
       </div>
