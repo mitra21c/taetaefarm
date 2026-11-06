@@ -1,13 +1,13 @@
 .main {
   min-height: 100vh;
-  background: #121212;
+  background: var(--bg);
   padding-top: 0;
 }
 
 .inner {
   max-width: 860px;
   margin: 0 auto;
-  padding: 1rem 1rem 1.5rem;
+  padding: 1rem clamp(1rem, 2vw, 1.5rem) 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
@@ -21,13 +21,13 @@
 .title {
   font-size: clamp(1.8rem, 4vw, 2.5rem);
   font-weight: 800;
-  color: #ffffff;
+  color: var(--ink);
   margin: 0 0 0.5rem;
 }
 
 .subtitle {
   font-size: 1rem;
-  color: #888888;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -36,11 +36,11 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.75rem 1.25rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(13, 12, 34, 0.035);
+  border: 1px solid rgba(13, 12, 34, 0.1);
   border-radius: 10px;
   font-size: 0.85rem;
-  color: #888888;
+  color: var(--text-muted);
 }
 
 .noticeIcon {
@@ -48,8 +48,8 @@
 }
 
 .tableWrap {
-  background: #1e1e1e;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface);
+  border: 1px solid rgba(13, 12, 34, 0.1);
   border-radius: 16px;
   overflow: auto;
 }
@@ -61,8 +61,8 @@
 }
 
 .table thead tr {
-  background: rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(13, 12, 34, 0.042);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.1);
 }
 
 .table th {
@@ -70,7 +70,7 @@
   text-align: left;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #cccccc;
+  color: var(--text-sub);
   white-space: nowrap;
 }
 
@@ -79,7 +79,7 @@
 }
 
 .table tbody tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.068);
   transition: background 0.15s;
 }
 
@@ -88,23 +88,23 @@
 }
 
 .table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(13, 12, 34, 0.021);
 }
 
 .table td {
   padding: 0.85rem 1rem;
   font-size: 0.9rem;
-  color: #aaaaaa;
+  color: var(--text-sub);
   vertical-align: middle;
 }
 
 .tdName {
   font-weight: 700;
-  color: #ffffff;
+  color: var(--ink);
 }
 
 .tdUnit {
-  color: #666666;
+  color: var(--text-faint);
   font-size: 0.82rem;
 }
 
@@ -115,7 +115,7 @@
 
 .tdMid {
   font-weight: 700;
-  color: #ffffff;
+  color: var(--ink);
 }
 
 .tdCenter {
@@ -128,20 +128,20 @@
 }
 
 .trendUp {
-  color: #f07070;
+  color: #e11d48;
 }
 
 .trendDown {
-  color: #70b8f0;
+  color: var(--info);
 }
 
 .trendSame {
-  color: #888888;
+  color: var(--text-muted);
 }
 
 .disclaimer {
   font-size: 0.8rem;
-  color: #555555;
+  color: var(--text-faint);
   line-height: 1.6;
   margin: 0;
 }

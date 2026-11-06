@@ -1,21 +1,21 @@
 .container {
   min-height: 100vh;
-  background: #0d0d0d;
-  padding: 1rem 1rem 1.5rem;
-  color: #cccccc;
+  background: var(--bg);
+  padding: 1rem clamp(1rem, 2vw, 1.5rem) 1.5rem;
+  color: var(--text-sub);
 }
 
 .title {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--ink);
   margin: 0 0 2rem;
 }
 
 /* ── 섹션 ── */
 .section {
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface);
+  border: 1px solid rgba(13, 12, 34, 0.084);
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
   margin-bottom: 1.25rem;
@@ -24,7 +24,7 @@
 .sectionTitle {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--ink);
   margin: 0 0 1rem;
   display: flex;
   align-items: center;
@@ -42,7 +42,7 @@
   border-radius: 10px;
   border: 1px solid rgba(251, 191, 36, 0.35);
   background: rgba(251, 191, 36, 0.1);
-  color: #fbbf24;
+  color: var(--warning);
   font-size: 0.9rem;
   font-weight: 700;
   font-family: inherit;
@@ -60,7 +60,7 @@
 }
 
 .infoTable tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.06);
 }
 
 .infoTable tr:last-child { border-bottom: none; }
@@ -71,7 +71,7 @@
 }
 
 .label {
-  color: #888888;
+  color: var(--text-muted);
   font-weight: 600;
   width: 130px;
   white-space: nowrap;
@@ -79,12 +79,12 @@
 
 /* ── 토큰 ── */
 .tokenBox {
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg);
+  border: 1px solid rgba(13, 12, 34, 0.076);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   font-size: 0.72rem;
-  color: #aaaaaa;
+  color: var(--text-sub);
   word-break: break-all;
   white-space: pre-wrap;
   margin: 0 0 0.75rem;
@@ -96,7 +96,7 @@
   border-radius: 6px;
   border: 1px solid rgba(96, 165, 250, 0.3);
   background: rgba(96, 165, 250, 0.1);
-  color: #60a5fa;
+  color: var(--info);
   font-size: 0.75rem;
   font-weight: 600;
   font-family: inherit;
@@ -109,25 +109,25 @@
 .testBtn {
   padding: 0.2rem 0.65rem;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: #2a2a2a;
-  color: #cccccc;
+  border: 1px solid rgba(13, 12, 34, 0.14);
+  background: var(--surface-2);
+  color: var(--text-sub);
   font-size: 0.8rem;
   font-family: inherit;
   cursor: pointer;
   transition: background 0.15s;
 }
 
-.testBtn:hover { background: #3a3a3a; }
+.testBtn:hover { background: var(--ink); }
 
-.ok  { color: #4ade80; font-size: 0.85rem; }
-.err { color: #f87171; font-size: 0.85rem; }
+.ok  { color: var(--success); font-size: 0.85rem; }
+.err { color: var(--danger); font-size: 0.85rem; }
 
 /* ── 팝업 모달 ── */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(13, 12, 34, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,15 +136,15 @@
 }
 
 .modal {
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--surface);
+  border: 1px solid rgba(13, 12, 34, 0.116);
   border-radius: 16px;
   width: 90vw;
   max-width: 1100px;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 20px 60px rgba(13, 12, 34, 0.12);
 }
 
 .modalHeader {
@@ -152,21 +152,21 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.1rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.084);
   flex-shrink: 0;
 }
 
 .modalTitle {
   font-size: 1rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--ink);
   margin: 0;
 }
 
 .closeBtn {
   background: none;
   border: none;
-  color: #888888;
+  color: var(--text-muted);
   font-size: 1.1rem;
   cursor: pointer;
   padding: 0.2rem 0.4rem;
@@ -174,12 +174,12 @@
   transition: color 0.15s;
 }
 
-.closeBtn:hover { color: #ffffff; }
+.closeBtn:hover { color: var(--ink); }
 
 .countMsg {
   padding: 0.6rem 1.5rem 0;
   font-size: 0.82rem;
-  color: #888888;
+  color: var(--text-muted);
   margin: 0;
   flex-shrink: 0;
 }
@@ -187,13 +187,13 @@
 .stateMsg {
   padding: 2rem;
   text-align: center;
-  color: #888888;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
 .errMsg {
   padding: 1rem 1.5rem;
-  color: #f87171;
+  color: var(--danger);
   font-size: 0.88rem;
 }
 
@@ -211,8 +211,8 @@
 }
 
 .modalTable thead tr {
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(13, 12, 34, 0.035);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.1);
 }
 
 .modalTable th {
@@ -220,21 +220,21 @@
   text-align: left;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #aaaaaa;
+  color: var(--text-sub);
   white-space: nowrap;
 }
 
 .modalTable tbody tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.06);
   transition: background 0.12s;
 }
 
 .modalTable tbody tr:last-child { border-bottom: none; }
-.modalTable tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+.modalTable tbody tr:hover { background: rgba(13, 12, 34, 0.021); }
 
 .modalTable td {
   padding: 0.55rem 0.85rem;
-  color: #cccccc;
+  color: var(--text-sub);
   vertical-align: middle;
 }
 
@@ -254,7 +254,7 @@
 .smsLabel {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #888888;
+  color: var(--text-muted);
   width: 120px;
   flex-shrink: 0;
   padding-top: 0.45rem;
@@ -262,11 +262,11 @@
 
 .smsInput {
   flex: 1;
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg);
+  border: 1px solid rgba(13, 12, 34, 0.1);
   border-radius: 8px;
   padding: 0.45rem 0.75rem;
-  color: #cccccc;
+  color: var(--text-sub);
   font-size: 0.88rem;
   font-family: inherit;
   outline: none;
@@ -277,11 +277,11 @@
 
 .smsTextarea {
   flex: 1;
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg);
+  border: 1px solid rgba(13, 12, 34, 0.1);
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
-  color: #cccccc;
+  color: var(--text-sub);
   font-size: 0.88rem;
   font-family: inherit;
   resize: vertical;
@@ -301,7 +301,7 @@
 
 .smsCount {
   font-size: 0.8rem;
-  color: #666666;
+  color: var(--text-faint);
 }
 
 .smsSendBtn {
@@ -309,7 +309,7 @@
   border-radius: 10px;
   border: 1px solid rgba(251, 191, 36, 0.35);
   background: rgba(251, 191, 36, 0.1);
-  color: #fbbf24;
+  color: var(--warning);
   font-size: 0.9rem;
   font-weight: 700;
   font-family: inherit;
@@ -320,8 +320,8 @@
 .smsSendBtn:hover:not(:disabled) { background: rgba(251, 191, 36, 0.2); }
 .smsSendBtn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.smsOk  { margin: 0; font-size: 0.88rem; color: #4ade80; }
-.smsErr { margin: 0; font-size: 0.88rem; color: #f87171; }
+.smsOk  { margin: 0; font-size: 0.88rem; color: var(--success); }
+.smsErr { margin: 0; font-size: 0.88rem; color: var(--danger); }
 
 /* ── 소켓 통신 테스트 ── */
 .socketAddrRow {
@@ -354,12 +354,12 @@
   padding-bottom: 0;
 }
 
-.socketStatusOn  { font-size: 0.82rem; color: #4ade80; white-space: nowrap; }
-.socketStatusOff { font-size: 0.82rem; color: #f87171; white-space: nowrap; }
+.socketStatusOn  { font-size: 0.82rem; color: var(--success); white-space: nowrap; }
+.socketStatusOff { font-size: 0.82rem; color: var(--danger); white-space: nowrap; }
 
 .socketLog {
-  background: #111111;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg);
+  border: 1px solid rgba(13, 12, 34, 0.076);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -369,9 +369,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.4rem 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.068);
   font-size: 0.75rem;
-  color: #888888;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
@@ -384,19 +384,19 @@
   gap: 0.2rem;
   font-family: monospace;
   font-size: 0.78rem;
-  color: #aaaaaa;
+  color: var(--text-sub);
 }
 
 /* ── 공지 전송 이력 ── */
 .noticeHistory {
   margin-top: 1.25rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid rgba(13, 12, 34, 0.076);
   padding-top: 1rem;
 }
 
 .noticeHistoryTitle {
   font-size: 0.82rem;
-  color: #888888;
+  color: var(--text-muted);
   margin: 0 0 0.6rem;
 }
 
@@ -411,17 +411,17 @@
   text-align: left;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #aaaaaa;
-  background: rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-sub);
+  background: rgba(13, 12, 34, 0.028);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.084);
   white-space: nowrap;
 }
 
 .noticeTable td {
   padding: 0.4rem 0.75rem;
-  color: #cccccc;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--text-sub);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.052);
 }
 
 .noticeTable tbody tr:last-child td { border-bottom: none; }
-.noticeTable tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+.noticeTable tbody tr:hover { background: rgba(13, 12, 34, 0.021); }

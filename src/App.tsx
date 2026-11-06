@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -15,8 +16,10 @@ import OrderStatusPage from './pages/OrderStatusPage';
 import MarketPricePage from './pages/MarketPricePage';
 import CropPricePage from './pages/CropPricePage';
 import DevPage from './pages/DevPage';
-import MainPage from './pages/MainPage';
 import styles from './App.module.css';
+
+// 문서 편집기(TipTap)가 커서 스마트 팜 화면에 들어갈 때만 내려받는다
+const SmartFarmPage = lazy(() => import('./pages/SmartFarmPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,13 +30,14 @@ const queryClient = new QueryClient({
 
 function Layout({ children }: { children: React.ReactNode }) {
   const { subItems } = useSubMenu();
-  const topOffset = subItems.length > 0 ? 148 : 104;
+  // Navbar: topBar 80px + subMenuBar 60px
+  const topOffset = subItems.length > 0 ? 140 : 80;
 
   return (
     <div className={styles.layout}>
       <Navbar />
       <main className={styles.content} style={{ marginTop: topOffset }}>
-        {children}
+        <Suspense fallback={null}>{children}</Suspense>
       </main>
       <Footer />
     </div>
@@ -47,11 +51,13 @@ export default function App() {
         <AuthProvider>
           <SubMenuProvider>
             <Routes>
-              <Route path="/" element={<Layout><MainPage /></Layout>} />
+              <Route path="/" element={<Layout><FarmPage /></Layout>} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/mypage" element={<Layout><MyPage /></Layout>} />
               <Route path="/members" element={<Layout><MembersPage /></Layout>} />
               <Route path="/farm" element={<Layout><FarmPage /></Layout>} />
+              <Route path="/smart-farm/:area" element={<Layout><SmartFarmPage /></Layout>} />
+              <Route path="/smart-farm/:area/p/:nodeId" element={<Layout><SmartFarmPage /></Layout>} />
               <Route path="/crops" element={<Layout><CropsPage /></Layout>} />
               <Route path="/order" element={<Layout><OrderPage /></Layout>} />
               <Route path="/order-status" element={<Layout><OrderStatusPage /></Layout>} />

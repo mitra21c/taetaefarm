@@ -14,19 +14,26 @@
   "dependencies": {
     "@tanstack/react-query": "^5.100.1",
     "@tanstack/react-query-devtools": "^5.100.1",
+    "@tiptap/extension-image": "3.32.0",
+    "@tiptap/extension-text-align": "3.32.0",
+    "@tiptap/extension-youtube": "3.32.0",
+    "@tiptap/extensions": "3.32.0",
+    "@tiptap/pm": "3.32.0",
+    "@tiptap/react": "3.32.0",
+    "@tiptap/starter-kit": "3.32.0",
     "axios": "^1.15.2",
     "cors": "^2.8.6",
     "crypto-js": "^4.2.0",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "jwt-decode": "^4.0.0",
-    "dotenv": "^17.4.2",
     "mssql": "^12.5.0",
-    "solapi": "^6.0.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-hook-form": "^7.73.1",
     "react-router-dom": "^7.14.2",
+    "solapi": "^6.0.1",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
@@ -49,5 +56,12 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.10"
+  },
+  "overrides": {
+    "prosemirror-transform": "1.12.4",
+    "prosemirror-changeset": "2.4.4",
+    "prosemirror-view": "1.42.7",
+    "prosemirror-schema-list": "1.5.1",
+    "linkifyjs": "4.3.3"
   }
 }

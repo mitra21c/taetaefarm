@@ -174,7 +174,7 @@ export default function OrderPage() {
         )}
 
         {pricesLoading && (
-          <p style={{ color: '#888', textAlign: 'center', padding: '2rem 0' }}>상품 정보를 불러오는 중…</p>
+          <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '2rem 0' }}>상품 정보를 불러오는 중…</p>
         )}
 
         <div className={styles.grid}>

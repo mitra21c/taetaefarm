@@ -176,11 +176,11 @@ export default function OrderStatusPage() {
                onClick={e => e.stopPropagation()}>
             <p style={{ fontSize:'2rem', margin:'0 0 0.5rem' }}>⚠️</p>
             <h3 style={{ margin:'0 0 0.75rem', fontSize:'1.1rem' }}>SMS 발송 오류</h3>
-            <p style={{ margin:'0 0 1.25rem', lineHeight:1.6, color:'#555' }}>
+            <p style={{ margin:'0 0 1.25rem', lineHeight:1.6, color:'var(--text-sub)' }}>
               주문 상태 변경은 완료되었습니다.<br />SMS 발송에 실패하였습니다.<br />(관리자에게 문의 하세요.)
             </p>
             <button onClick={() => setPopup(null)}
-                    style={{ padding:'0.5rem 1.5rem', background:'#e53e3e', color:'#fff', border:'none', borderRadius:'0.375rem', cursor:'pointer', fontWeight:600 }}>
+                    style={{ padding:'0.7rem 1.75rem', background:'var(--ink)', color:'#fff', border:'none', borderRadius:'999px', cursor:'pointer', fontWeight:600 }}>
               확인
             </button>
           </div>

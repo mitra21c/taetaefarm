@@ -1,0 +1,55 @@
+.wrap {
+  margin-top: 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0.9rem;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+}
+
+.url {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.open {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.open:hover {
+  color: var(--accent);
+}
+
+/* 스크롤바가 걸리는 오른쪽·아래 가장자리를 잘라 내는 틀 */
+.box {
+  position: relative;
+  height: max(600px, calc(100vh - 260px));
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  border: 0;
+  transform-origin: 0 0;
+}

@@ -4,8 +4,8 @@
   min-height: 100vh;
 }
 
-/* 104px = titleBar(56px) + menuBar(48px) */
+/* 80px = Navbar topBar (서브메뉴가 있으면 App.tsx 에서 140px) */
 .content {
   flex: 1;
-  margin-top: 104px;
+  margin-top: 80px;
 }

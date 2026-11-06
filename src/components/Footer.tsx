@@ -1,19 +1,13 @@
 import styles from './Footer.module.css';
 
+// 메인 화면 Bottom: 농장 정보 (가운데 정렬)
 export default function Footer() {
   return (
     <footer className={styles.footer}>
-      <div className={styles.inner}>
-        <img
-          src="https://mitra21c.github.io/data/images/taetaefarm/taetaefarm/icon.png"
-          alt="태태농장"
-          className={styles.icon}
-        />
-        <div className={styles.details}>
-          <p className={styles.line}>주소 : 전라남도 장성군</p>
-          <p className={styles.line}>연락처 : mitra21c@naver.com</p>
-        </div>
-      </div>
+      <p className={styles.line}>주소 : 전라남도 장성군</p>
+      <p className={styles.line}>
+        연락처 : <a href="mailto:mitra21c@naver.com" className={styles.mail}>mitra21c@naver.com</a>
+      </p>
     </footer>
   );
 }

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="공사 중인 농장">
+  <!-- 배경 -->
+  <ellipse cx="240" cy="168" rx="226" ry="146" fill="#fdeef4"/>
+  <circle cx="378" cy="70" r="30" fill="#ffd166"/>
+  <circle cx="378" cy="70" r="42" fill="#ffd166" opacity="0.25"/>
+  <path d="M80 92c8-12 30-12 36 0 12-2 18 10 10 16H72c-8-4-4-16 8-16z" fill="#fff"/>
+  <path d="M262 52c6-9 22-9 27 0 9-1 13 7 7 12h-40c-6-3-3-12 6-12z" fill="#fff"/>
+
+  <!-- 언덕 -->
+  <path d="M14 230c60-56 140-70 220-44s150 18 232-22v82c0 40-30 66-80 66H94c-50 0-80-26-80-66z" fill="#c9ebd0"/>
+  <path d="M14 254c80-34 170-38 250-16s140 10 202-14v40c0 34-26 50-70 50H84c-44 0-70-20-70-50z" fill="#93d3a2"/>
+
+  <!-- 비닐하우스 -->
+  <g transform="translate(46 150)">
+    <path d="M0 74V44C0 18 22 0 52 0h18c30 0 52 18 52 44v30z" fill="#ffffff" opacity="0.92"/>
+    <path d="M0 74V44C0 18 22 0 52 0h18c30 0 52 18 52 44v30" fill="none" stroke="#0d0c22" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M30 74V30M61 74V2M92 74V30" stroke="#0d0c22" stroke-width="2" opacity="0.35"/>
+    <path d="M8 40h106" stroke="#0d0c22" stroke-width="2" opacity="0.35"/>
+    <rect x="48" y="46" width="26" height="28" rx="3" fill="#fdeef4" stroke="#0d0c22" stroke-width="2.5"/>
+  </g>
+
+  <!-- 감나무 -->
+  <g transform="translate(196 120)">
+    <rect x="30" y="56" width="10" height="56" rx="4" fill="#8a5a3b"/>
+    <circle cx="35" cy="44" r="40" fill="#4caf6e"/>
+    <circle cx="14" cy="56" r="20" fill="#43a063"/>
+    <circle cx="58" cy="54" r="22" fill="#43a063"/>
+    <g fill="#f48c2b">
+      <circle cx="20" cy="34" r="7"/><circle cx="46" cy="24" r="7"/>
+      <circle cx="54" cy="52" r="7"/><circle cx="28" cy="60" r="7"/><circle cx="40" cy="42" r="6"/>
+    </g>
+    <g fill="#2f6d3c">
+      <rect x="18" y="26" width="4" height="3" rx="1"/><rect x="44" y="16" width="4" height="3" rx="1"/>
+      <rect x="52" y="44" width="4" height="3" rx="1"/><rect x="26" y="52" width="4" height="3" rx="1"/>
+    </g>
+  </g>
+
+  <!-- 블루베리 덤불 -->
+  <g transform="translate(150 214)">
+    <ellipse cx="34" cy="20" rx="38" ry="22" fill="#3f9a5c"/>
+    <g fill="#4f62d6">
+      <circle cx="16" cy="14" r="6"/><circle cx="28" cy="22" r="6"/><circle cx="44" cy="12" r="6"/>
+      <circle cx="54" cy="24" r="6"/><circle cx="36" cy="6" r="5"/>
+    </g>
+    <g fill="#ffffff" opacity="0.6">
+      <circle cx="14" cy="12" r="1.6"/><circle cx="26" cy="20" r="1.6"/><circle cx="42" cy="10" r="1.6"/><circle cx="52" cy="22" r="1.6"/>
+    </g>
+  </g>
+
+  <!-- 공사 중 바리케이드 -->
+  <g transform="translate(286 196)">
+    <rect x="10" y="22" width="8" height="54" rx="3" fill="#0d0c22"/>
+    <rect x="112" y="22" width="8" height="54" rx="3" fill="#0d0c22"/>
+    <rect x="0" y="10" width="130" height="30" rx="6" fill="#ffd166" stroke="#0d0c22" stroke-width="3"/>
+    <clipPath id="bar"><rect x="0" y="10" width="130" height="30" rx="6"/></clipPath>
+    <g clip-path="url(#bar)" fill="#0d0c22">
+      <path d="M8 40 28 10h14L22 40zM44 40l20-30h14L58 40zM80 40l20-30h14L94 40zM116 40l20-30h14l-20 30z"/>
+    </g>
+    <rect x="4" y="74" width="20" height="6" rx="3" fill="#0d0c22"/>
+    <rect x="106" y="74" width="20" height="6" rx="3" fill="#0d0c22"/>
+  </g>
+
+  <!-- 라바콘 -->
+  <g transform="translate(432 230)">
+    <path d="M-14 46 0 0l14 46z" fill="#ea4c89"/>
+    <path d="M-9.5 31h19l-2.6-9h-13.8z" fill="#fff"/>
+    <rect x="-20" y="44" width="40" height="8" rx="3" fill="#0d0c22"/>
+  </g>
+
+  <!-- 렌치 -->
+  <g transform="translate(400 150) rotate(35)">
+    <rect x="-4" y="0" width="8" height="40" rx="4" fill="#9e9ea7"/>
+    <path d="M-12 -6a12 12 0 1 0 24 0l-6 0 0 6h-12l0-6z" fill="#9e9ea7"/>
+  </g>
+</svg>

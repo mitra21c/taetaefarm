@@ -3,18 +3,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 55%, #242424 100%);
+  background: var(--bg-soft);
   padding: 1rem 1rem 1.5rem;
 }
 
 .card {
   width: 100%;
   max-width: 440px;
-  background: #1e1e1e;
+  background: var(--surface);
   border-radius: 20px;
   padding: 2.5rem;
-  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 56px rgba(13, 12, 34, 0.12);
+  border: 1px solid rgba(13, 12, 34, 0.1);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -27,7 +27,7 @@
 
 .backLink {
   display: inline-block;
-  color: #888888;
+  color: var(--text-muted);
   font-size: 0.85rem;
   text-decoration: none;
   margin-bottom: 1.5rem;
@@ -35,7 +35,7 @@
 }
 
 .backLink:hover {
-  color: #cccccc;
+  color: var(--text-sub);
 }
 
 .logoWrap {
@@ -53,13 +53,13 @@
 .title {
   font-size: 1.7rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--ink);
   margin: 0;
 }
 
 .subtitle {
   font-size: 0.9rem;
-  color: #888888;
+  color: var(--text-muted);
   margin: 0;
   font-weight: 600;
 }
@@ -76,27 +76,27 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3a3a3a, #505050);
-  color: #fff;
+  background: var(--ink);
+  color: #ffffff;
   font-size: 2rem;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 6px 20px rgba(13, 12, 34, 0.1);
 }
 
 .avatarName {
   font-size: 1.2rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--ink);
 }
 
 .avatarRole {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #fff;
-  background: #3a3a3a;
+  color: #ffffff;
+  background: var(--ink);
   padding: 0.2rem 0.75rem;
   border-radius: 10px;
 }
@@ -106,7 +106,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(13, 12, 34, 0.1);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -115,7 +115,7 @@
   display: flex;
   align-items: center;
   padding: 0.85rem 1.2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.068);
   gap: 1rem;
 }
 
@@ -126,13 +126,13 @@
 .infoLabel {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #888888;
+  color: var(--text-muted);
   min-width: 80px;
 }
 
 .infoValue {
   font-size: 0.95rem;
-  color: #e0e0e0;
+  color: var(--ink);
   word-break: break-all;
 }
 
@@ -143,7 +143,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1.5rem;
-  color: #888888;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
@@ -151,8 +151,8 @@
   display: block;
   width: 28px;
   height: 28px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-top-color: #ffffff;
+  border: 3px solid rgba(13, 12, 34, 0.1);
+  border-top-color: var(--ink);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -164,7 +164,7 @@
 .errorBox {
   padding: 0.9rem 1.2rem;
   background: rgba(239, 83, 80, 0.15);
-  color: #ef9a9a;
+  color: #d93848;
   border-radius: 10px;
   font-size: 0.9rem;
   text-align: center;
@@ -177,9 +177,9 @@
   align-items: center;
   justify-content: center;
   padding: 0.8rem;
-  border-radius: 10px;
-  background: #3a3a3a;
-  color: #fff;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: #ffffff;
   font-size: 0.95rem;
   font-weight: 700;
   text-decoration: none;
@@ -187,6 +187,6 @@
 }
 
 .homeBtn:hover {
-  background: #505050;
+  background: var(--ink-hover);
   transform: translateY(-1px);
 }

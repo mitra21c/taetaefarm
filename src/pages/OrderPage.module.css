@@ -1,12 +1,12 @@
 .main {
   min-height: 100vh;
-  background: #121212;
+  background: var(--bg);
 }
 
 .inner {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 1rem 1rem 1.5rem;
+  padding: 1rem clamp(1rem, 2vw, 1.5rem) 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -19,21 +19,21 @@
   justify-content: center;
   gap: 1rem;
   padding: 0.9rem 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(13, 12, 34, 0.035);
+  border: 1px solid rgba(13, 12, 34, 0.1);
   border-radius: 10px;
   font-size: 0.95rem;
-  color: #888888;
+  color: var(--text-muted);
 }
 
 .loginLink {
-  color: #ffffff;
+  color: var(--ink);
   font-weight: 700;
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid rgba(13, 12, 34, 0.34);
 }
 
-.loginLink:hover { color: #cccccc; }
+.loginLink:hover { color: var(--text-sub); }
 
 /* ── 상품 그리드 ── */
 .grid {
@@ -43,8 +43,8 @@
 }
 
 .card {
-  background: #1e1e1e;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface);
+  border: 1px solid rgba(13, 12, 34, 0.1);
   border-radius: 16px;
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -52,7 +52,7 @@
 
 .card:hover:not(.cardDisabled) {
   transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 16px 40px rgba(13, 12, 34, 0.1);
 }
 
 .cardDisabled { opacity: 0.55; }
@@ -69,13 +69,14 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: grayscale(1);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1rem;
   font-weight: 800;
-  color: #aaaaaa;
+  color: var(--ink);
   letter-spacing: 0.08em;
 }
 
@@ -89,7 +90,7 @@
 .productName {
   font-size: 1.05rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--ink);
   margin: 0;
 }
 
@@ -101,22 +102,22 @@
 
 .specLabel {
   font-size: 0.82rem;
-  color: #666666;
+  color: var(--text-faint);
   min-width: 2.2rem;
 }
 
 .specValue {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--ink);
 }
 
 .orderBtn {
   width: 100%;
   padding: 0.65rem;
   border: none;
-  border-radius: 8px;
-  background: #0d2b5e;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
   color: #ffffff;
   font-size: 0.9rem;
   font-weight: 700;
@@ -125,11 +126,11 @@
   transition: background 0.2s;
 }
 
-.orderBtn:hover:not(:disabled) { background: #1a3a7a; }
+.orderBtn:hover:not(:disabled) { background: var(--ink); }
 
 .orderBtn:disabled {
-  background: #2e2e2e;
-  color: #666666;
+  background: var(--surface-3);
+  color: var(--text-faint);
   cursor: not-allowed;
 }
 
@@ -140,7 +141,7 @@
   gap: 0.5rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #cccccc;
+  color: var(--text-sub);
   cursor: pointer;
   user-select: none;
   padding: 0.1rem 0;
@@ -150,11 +151,11 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #0d2b5e;
+  accent-color: var(--ink);
 }
 
 .req {
-  color: #ef9a9a;
+  color: #d93848;
   font-size: 0.78rem;
 }
 
@@ -162,7 +163,7 @@
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(13, 12, 34, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,8 +172,8 @@
 }
 
 .modal {
-  background: #1e1e1e;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--surface);
+  border: 1px solid rgba(13, 12, 34, 0.116);
   border-radius: 16px;
   padding: 2rem;
   width: 100%;
@@ -184,7 +185,7 @@
 .modalTitle {
   font-size: 1.2rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--ink);
   margin: 0 0 1.5rem;
   display: flex;
   align-items: baseline;
@@ -195,7 +196,7 @@
 .modalPrice {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #888888;
+  color: var(--text-muted);
 }
 
 /* ── 폼 ── */
@@ -206,7 +207,7 @@
 }
 
 .fieldset {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(13, 12, 34, 0.1);
   border-radius: 10px;
   padding: 1rem 1.1rem;
   display: flex;
@@ -218,7 +219,7 @@
 .legend {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #888888;
+  color: var(--text-muted);
   padding: 0 0.4rem;
   letter-spacing: 0.04em;
 }
@@ -232,7 +233,7 @@
 .label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #aaaaaa;
+  color: var(--text-sub);
   min-width: 4.5rem;
   flex-shrink: 0;
 }
@@ -240,21 +241,21 @@
 .input {
   flex: 1;
   padding: 0.5rem 0.75rem;
-  background: #2a2a2a;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--surface-2);
+  border: 1px solid rgba(13, 12, 34, 0.116);
   border-radius: 7px;
-  color: #ffffff;
+  color: var(--ink);
   font-size: 0.9rem;
   font-family: inherit;
   outline: none;
   transition: border-color 0.2s;
 }
 
-.input:focus { border-color: rgba(255, 255, 255, 0.35); }
+.input:focus { border-color: var(--accent); }
 
 .inputReadonly {
-  background: #242424;
-  color: #888888;
+  background: var(--surface-2);
+  color: var(--text-muted);
   cursor: default;
 }
 
@@ -268,10 +269,10 @@
 .cancelBtn {
   flex: 1;
   padding: 0.7rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(13, 12, 34, 0.18);
   border-radius: 8px;
   background: transparent;
-  color: #aaaaaa;
+  color: var(--text-sub);
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
@@ -280,16 +281,16 @@
 }
 
 .cancelBtn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
+  background: rgba(13, 12, 34, 0.042);
+  color: var(--ink);
 }
 
 .submitBtn {
   flex: 2;
   padding: 0.7rem;
   border: none;
-  border-radius: 8px;
-  background: #0d2b5e;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
   color: #ffffff;
   font-size: 0.95rem;
   font-weight: 700;
@@ -298,11 +299,11 @@
   transition: background 0.2s;
 }
 
-.submitBtn:hover { background: #1a3a7a; }
+.submitBtn:hover { background: var(--ink); }
 
 .submitError {
   font-size: 0.85rem;
-  color: #ef9a9a;
+  color: #d93848;
   background: rgba(239, 83, 80, 0.12);
   border: 1px solid rgba(239, 83, 80, 0.25);
   border-radius: 8px;

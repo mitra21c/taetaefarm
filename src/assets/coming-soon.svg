@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 280" role="img" aria-label="준비 중">
+  <ellipse cx="180" cy="148" rx="164" ry="122" fill="#fdeef4"/>
+  <circle cx="72" cy="64" r="5" fill="#ea4c89" opacity="0.5"/>
+  <circle cx="298" cy="90" r="4" fill="#ea4c89" opacity="0.5"/>
+  <path d="M286 52v16M278 60h16" stroke="#ffd166" stroke-width="4" stroke-linecap="round"/>
+  <path d="M60 140v12M54 146h12" stroke="#ffd166" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- 새싹 -->
+  <path d="M180 178c0-30 2-58 0-82" fill="none" stroke="#3f9a5c" stroke-width="6" stroke-linecap="round"/>
+  <path d="M180 124c-8-26-34-38-62-32 4 28 30 44 62 32z" fill="#5cbf7a"/>
+  <path d="M180 124c-12-12-30-20-50-24" fill="none" stroke="#3f9a5c" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M181 104c6-28 30-44 60-42-2 30-26 48-60 42z" fill="#4caf6e"/>
+  <path d="M181 104c12-14 28-24 46-30" fill="none" stroke="#2f7a46" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- 화분 -->
+  <path d="M120 176h120l-12 74c-1.4 8-8 14-16 14h-64c-8 0-14.6-6-16-14z" fill="#e8885a"/>
+  <rect x="112" y="166" width="136" height="24" rx="8" fill="#f29b6c"/>
+  <path d="M124 166c16-8 96-8 112 0" fill="#7a4b33"/>
+  <path d="M150 214h60" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- 모래시계 -->
+  <g transform="translate(262 180)">
+    <rect x="-20" y="-4" width="40" height="7" rx="3" fill="#0d0c22"/>
+    <rect x="-20" y="57" width="40" height="7" rx="3" fill="#0d0c22"/>
+    <path d="M-14 3h28c0 14-10 20-12 27 2 7 12 13 12 27h-28c0-14 10-20 12-27-2-7-12-13-12-27z" fill="#fff" stroke="#0d0c22" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-8 12h16c-2 6-6 9-8 12-2-3-6-6-8-12zM-9 54c1-8 6-11 9-14 3 3 8 6 9 14z" fill="#ffd166"/>
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+    HTML 테스트 중
+    동작 시퀀스
+    <img src="https://mitra21c.github.io/data/images/taetaefarm/projects/2027/%EC%A0%84%EB%82%A8%20%EC%9E%A5%EC%84%B1%20%EC%95%9E%EB%B0%AD/BlockDiagram.png" alt="블럭 다이어 그램" />
+
+    컨트롤 판넬 배치도
+    <img src="https://mitra21c.github.io/data/images/taetaefarm/projects/2027/%EC%A0%84%EB%82%A8%20%EC%9E%A5%EC%84%B1%20%EC%95%9E%EB%B0%AD/Layout.png" alt="블럭 다이어 그램" />
+
+    컨트롤 판넬 회로도
+    <img src="https://mitra21c.github.io/data/images/taetaefarm/projects/2027/%EC%A0%84%EB%82%A8%20%EC%9E%A5%EC%84%B1%20%EC%95%9E%EB%B0%AD/Schematic.png" alt="블럭 다이어 그램" />
+
+
+    테스트
+    https://blog.naver.com/mitra21c/memo/30136865689

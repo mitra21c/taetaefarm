@@ -31,7 +31,8 @@ function getSolapi() {
 }
 
 app.use(cors({ origin: '*' }));
-app.use(express.json());
+// 스마트 팜 문서 내용(HTML)을 받기 위해 기본 100KB 보다 크게
+app.use(express.json({ limit: '2mb' }));
 
 const dbConfig: sql.config = {
   server: requireEnv('DB_SERVER'),
@@ -622,6 +623,211 @@ app.put('/api/crop-prices', async (req, res) => {
         `);
     }
     res.json({ message: '저장되었습니다.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+// ─────────────────────────── SMART FARM ───────────────────────────
+// 스마트 팜 화면(관수 자동화 등)의 좌측 프로젝트 트리와 각 페이지 내용
+//   node_type: 'folder'(묶음, 예: 2027년도) / 'page'(내용이 있는 프로젝트, 예: 전남 장성 앞밭)
+//   content  : 문서 편집기(TipTap)가 만든 HTML. 이미지·영상은 GitHub 등에 올린 파일의 URL 만 담는다.
+
+const SMART_FARM_AREAS = ['irrigation', 'nutrient'];
+const SMART_FARM_LABEL_MAX = 100;
+const SMART_FARM_CONTENT_MAX = 1_000_000; // 약 1MB (HTML 글자 수)
+
+// 편집 권한: 지금은 누구나 편집 가능.
+// 관리자·매니저만 허용하려면 아래 return true 를 지우고 주석 처리된 코드를 쓰면 된다
+// (화면 쪽은 src/pages/SmartFarmPage.tsx 의 canEdit 도 함께 바꾼다).
+function canEditSmartFarm(_req: express.Request): boolean {
+  return true;
+  // const token = _req.headers.authorization?.startsWith('Bearer ') ? _req.headers.authorization.slice(7) : null;
+  // if (!token) return false;
+  // try {
+  //   const { role } = jwt.verify(token, JWT_SECRET) as { role?: string };
+  //   return role === 'admin' || role === 'manager';
+  // } catch { return false; }
+}
+
+function requireSmartFarmEditor(req: express.Request, res: express.Response): boolean {
+  if (canEditSmartFarm(req)) return true;
+  res.status(403).json({ message: '편집 권한이 없습니다.' });
+  return false;
+}
+
+let smartFarmTableReady = false;
+async function ensureSmartFarmTable() {
+  if (smartFarmTableReady) return;
+  const db = await getPool();
+  await db.request().query(`
+    IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='smart_farm_nodes' AND xtype='U')
+    CREATE TABLE smart_farm_nodes (
+      id          INT IDENTITY(1,1) PRIMARY KEY,
+      area        VARCHAR(30)   NOT NULL,
+      parent_id   INT           NULL,
+      node_type   VARCHAR(10)   NOT NULL DEFAULT 'page',
+      label       NVARCHAR(100) NOT NULL,
+      sort_order  INT           NOT NULL DEFAULT 0,
+      content     NVARCHAR(MAX) NULL,
+      created_at  DATETIME      DEFAULT GETDATE(),
+      modified_at DATETIME      NULL
+    )
+  `);
+  // 처음 만들 때만 기본 트리: 2027년도 └ 전남 장성 앞밭
+  const cnt = await db.request()
+    .input('area', sql.VarChar, 'irrigation')
+    .query(`SELECT COUNT(*) AS cnt FROM smart_farm_nodes WHERE area = @area`);
+  if (cnt.recordset[0].cnt === 0) {
+    const year = await db.request()
+      .input('area',  sql.VarChar,  'irrigation')
+      .input('label', sql.NVarChar, '2027년도')
+      .query(`INSERT INTO smart_farm_nodes (area, parent_id, node_type, label, sort_order)
+              OUTPUT INSERTED.id VALUES (@area, NULL, 'folder', @label, 0)`);
+    await db.request()
+      .input('area',   sql.VarChar,  'irrigation')
+      .input('parent', sql.Int,      year.recordset[0].id)
+      .input('label',  sql.NVarChar, '전남 장성 앞밭')
+      .query(`INSERT INTO smart_farm_nodes (area, parent_id, node_type, label, sort_order)
+              VALUES (@area, @parent, 'page', @label, 0)`);
+  }
+  smartFarmTableReady = true;
+}
+
+function cleanLabel(v: unknown): string | null {
+  if (typeof v !== 'string') return null;
+  const label = v.trim();
+  return label && label.length <= SMART_FARM_LABEL_MAX ? label : null;
+}
+
+// 트리 목록 (내용 제외)
+app.get('/api/smart-farm/:area/nodes', async (req, res) => {
+  const { area } = req.params;
+  if (!SMART_FARM_AREAS.includes(area)) { res.status(404).json({ message: '없는 메뉴입니다.' }); return; }
+  try {
+    await ensureSmartFarmTable();
+    const db = await getPool();
+    const result = await db.request()
+      .input('area', sql.VarChar, area)
+      .query(`SELECT id, parent_id, node_type, label, sort_order
+              FROM smart_farm_nodes WHERE area = @area ORDER BY sort_order, id`);
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+// 항목 하나 (내용 포함)
+app.get('/api/smart-farm/nodes/:id', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!id) { res.status(400).json({ message: '잘못된 요청입니다.' }); return; }
+  try {
+    await ensureSmartFarmTable();
+    const db = await getPool();
+    const result = await db.request()
+      .input('id', sql.Int, id)
+      .query(`SELECT id, area, parent_id, node_type, label, content, created_at, modified_at
+              FROM smart_farm_nodes WHERE id = @id`);
+    result.recordset.length === 0
+      ? res.status(404).json({ message: '항목을 찾을 수 없습니다.' })
+      : res.json(result.recordset[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+// 항목 추가 (parent_id 가 없으면 '프로젝트' 바로 아래)
+app.post('/api/smart-farm/:area/nodes', async (req, res) => {
+  if (!requireSmartFarmEditor(req, res)) return;
+  const { area } = req.params;
+  if (!SMART_FARM_AREAS.includes(area)) { res.status(404).json({ message: '없는 메뉴입니다.' }); return; }
+  const { parent_id, node_type, label } = (req.body ?? {}) as { parent_id?: number | null; node_type?: string; label?: unknown };
+  const name = cleanLabel(label);
+  if (!name) { res.status(400).json({ message: `이름을 1~${SMART_FARM_LABEL_MAX}자로 입력해 주세요.` }); return; }
+  if (node_type !== 'folder' && node_type !== 'page') { res.status(400).json({ message: '종류가 올바르지 않습니다.' }); return; }
+  const parentId = parent_id ? Number(parent_id) : null;
+  try {
+    await ensureSmartFarmTable();
+    const db = await getPool();
+    if (parentId) {
+      const parent = await db.request()
+        .input('id', sql.Int, parentId).input('area', sql.VarChar, area)
+        .query(`SELECT node_type FROM smart_farm_nodes WHERE id = @id AND area = @area`);
+      if (parent.recordset.length === 0) { res.status(404).json({ message: '상위 항목을 찾을 수 없습니다.' }); return; }
+      if (parent.recordset[0].node_type !== 'folder') { res.status(400).json({ message: '폴더 아래에만 추가할 수 있습니다.' }); return; }
+    }
+    const result = await db.request()
+      .input('area',   sql.VarChar,  area)
+      .input('parent', sql.Int,      parentId)
+      .input('type',   sql.VarChar,  node_type)
+      .input('label',  sql.NVarChar, name)
+      .query(`INSERT INTO smart_farm_nodes (area, parent_id, node_type, label, sort_order)
+              OUTPUT INSERTED.id, INSERTED.parent_id, INSERTED.node_type, INSERTED.label, INSERTED.sort_order
+              SELECT @area, @parent, @type, @label, ISNULL(MAX(sort_order), -1) + 1
+              FROM smart_farm_nodes
+              WHERE area = @area AND ((@parent IS NULL AND parent_id IS NULL) OR parent_id = @parent)`);
+    res.status(201).json(result.recordset[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+// 이름 변경 / 내용 저장
+app.patch('/api/smart-farm/nodes/:id', async (req, res) => {
+  if (!requireSmartFarmEditor(req, res)) return;
+  const id = parseInt(req.params.id, 10);
+  if (!id) { res.status(400).json({ message: '잘못된 요청입니다.' }); return; }
+  const { label, content } = (req.body ?? {}) as { label?: unknown; content?: unknown };
+  let name: string | null = null;
+  if (label !== undefined) {
+    name = cleanLabel(label);
+    if (!name) { res.status(400).json({ message: `이름을 1~${SMART_FARM_LABEL_MAX}자로 입력해 주세요.` }); return; }
+  }
+  if (content !== undefined && (typeof content !== 'string' || content.length > SMART_FARM_CONTENT_MAX)) {
+    res.status(400).json({ message: '내용이 너무 깁니다.' }); return;
+  }
+  if (name === null && content === undefined) { res.status(400).json({ message: '변경할 항목이 없습니다.' }); return; }
+  try {
+    await ensureSmartFarmTable();
+    const request = (await getPool()).request().input('id', sql.Int, id);
+    const sets: string[] = [];
+    if (name !== null) { request.input('label', sql.NVarChar, name); sets.push('label = @label'); }
+    if (content !== undefined) { request.input('content', sql.NVarChar(sql.MAX), content as string); sets.push('content = @content'); }
+    const result = await request.query(
+      `UPDATE smart_farm_nodes SET ${sets.join(', ')}, modified_at = GETDATE() WHERE id = @id`
+    );
+    result.rowsAffected[0] === 0
+      ? res.status(404).json({ message: '항목을 찾을 수 없습니다.' })
+      : res.json({ message: '저장되었습니다.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+// 삭제 (하위 항목까지 모두)
+app.delete('/api/smart-farm/nodes/:id', async (req, res) => {
+  if (!requireSmartFarmEditor(req, res)) return;
+  const id = parseInt(req.params.id, 10);
+  if (!id) { res.status(400).json({ message: '잘못된 요청입니다.' }); return; }
+  try {
+    await ensureSmartFarmTable();
+    const db = await getPool();
+    const result = await db.request()
+      .input('id', sql.Int, id)
+      .query(`WITH tree AS (
+                SELECT id FROM smart_farm_nodes WHERE id = @id
+                UNION ALL
+                SELECT n.id FROM smart_farm_nodes n JOIN tree t ON n.parent_id = t.id
+              )
+              DELETE FROM smart_farm_nodes WHERE id IN (SELECT id FROM tree)`);
+    result.rowsAffected[0] === 0
+      ? res.status(404).json({ message: '항목을 찾을 수 없습니다.' })
+      : res.json({ message: '삭제되었습니다.', deleted: result.rowsAffected[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
