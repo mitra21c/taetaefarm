@@ -16,8 +16,8 @@ type SortDir = 'asc' | 'desc';
 export default function MembersPage() {
   const { user, isAuthenticated } = useAuthContext();
   const isAdmin    = user?.role === 'admin';
-  const isManager  = user?.role === 'manager';
-  const canAccess  = isAdmin || isManager;
+  // 회원 정보 화면은 관리자 로그인 시에만 표시
+  const canAccess  = isAdmin;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);

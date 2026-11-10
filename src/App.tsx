@@ -16,6 +16,7 @@ import OrderStatusPage from './pages/OrderStatusPage';
 import MarketPricePage from './pages/MarketPricePage';
 import CropPricePage from './pages/CropPricePage';
 import DevPage from './pages/DevPage';
+import EtcPage from './pages/EtcPage';
 import styles from './App.module.css';
 
 // 문서 편집기(TipTap)가 커서 스마트 팜 화면에 들어갈 때만 내려받는다
@@ -63,6 +64,8 @@ export default function App() {
               <Route path="/order-status" element={<Layout><OrderStatusPage /></Layout>} />
               <Route path="/market-price" element={<Layout><MarketPricePage /></Layout>} />
               <Route path="/crop-price" element={<Layout><CropPricePage /></Layout>} />
+              <Route path="/etc" element={<Layout><EtcPage /></Layout>} />
+              <Route path="/etc/p/:nodeId" element={<Layout><EtcPage /></Layout>} />
               <Route path="/dev" element={<Layout><DevPage /></Layout>} />
             </Routes>
           </SubMenuProvider>

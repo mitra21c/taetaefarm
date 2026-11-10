@@ -6,6 +6,8 @@ interface Props {
   title: string;
   /** 보여 줄 사이트가 그려지는 너비(px). 화면이 이보다 좁으면 비율대로 축소한다. */
   contentWidth?: number;
+  /** true 면 위쪽 막대(사이트 주소, 새 창에서 열기)를 표시하지 않는다 */
+  hideBar?: boolean;
 }
 
 // iframe 안 스크롤바는 상대 사이트가 그리므로 CSS 로 못 숨긴다.
@@ -13,7 +15,7 @@ interface Props {
 const SCROLLBAR = 20;
 
 /** 다른 사이트(블로그 등)를 스크롤바 없이, 영역 너비에 맞춰 보여 준다 */
-export default function EmbedFrame({ url, title, contentWidth = 840 }: Props) {
+export default function EmbedFrame({ url, title, contentWidth = 840, hideBar = false }: Props) {
   const boxRef = useRef<HTMLDivElement>(null);
   const [box, setBox] = useState({ w: 0, h: 0 });
 
@@ -34,12 +36,14 @@ export default function EmbedFrame({ url, title, contentWidth = 840 }: Props) {
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.bar}>
-        <span className={styles.url}>{url}</span>
-        <a href={url} target="_blank" rel="noopener noreferrer" className={styles.open}>
-          새 창에서 열기 ↗
-        </a>
-      </div>
+      {!hideBar && (
+        <div className={styles.bar}>
+          <span className={styles.url}>{url}</span>
+          <a href={url} target="_blank" rel="noopener noreferrer" className={styles.open}>
+            새 창에서 열기 ↗
+          </a>
+        </div>
+      )}
       <div ref={boxRef} className={styles.box}>
         {box.w > 0 && (
           <iframe

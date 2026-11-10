@@ -42,6 +42,7 @@ export default function Navbar() {
   }, [smartOpen]);
 
   const isStaff = isAuthenticated && (user?.role === 'admin' || user?.role === 'manager');
+  const isAdmin = isAuthenticated && user?.role === 'admin';
   const isSmartFarm = pathname.startsWith('/smart-farm');
   const close = () => {
     setMenuOpen(false);
@@ -120,10 +121,11 @@ export default function Navbar() {
             <NavLink to="/crop-price" className={navClass} onClick={close}>작물 가격</NavLink>
           )}
           <NavLink to="/market-price" className={navClass} onClick={close}>가락동 도매 시장</NavLink>
-          {isStaff && (
+          <NavLink to="/etc" className={navClass} onClick={close}>기타 자료</NavLink>
+          {isAdmin && (
             <NavLink to="/members" className={navClass} onClick={close}>회원 정보</NavLink>
           )}
-          {isAuthenticated && user?.role === 'admin' && (
+          {isAdmin && (
             <NavLink to="/dev" className={navClass} onClick={close}>개발자모드</NavLink>
           )}
           {isAuthenticated && (

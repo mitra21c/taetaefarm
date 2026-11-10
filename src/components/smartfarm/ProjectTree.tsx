@@ -17,6 +17,8 @@ interface Props {
   /** 주소에 id 가 없을 때 보여 주는 항목 (이 항목은 /smart-farm/:area 로 연결) */
   defaultId: string | null;
   canEdit: boolean;
+  /** 항목 주소의 앞부분 (기본: /smart-farm/:area). 항목은 `${basePath}/p/:id` 로 연결된다 */
+  basePath?: string;
 }
 
 /** DB 모드에서 '프로젝트' 묶음의 id (서버에는 parent_id = null) */
@@ -101,8 +103,9 @@ type Editing =
   | null;
 
 export default function ProjectTree({
-  area, title, nodes, loading, loadError, activeId, defaultId, canEdit,
+  area, title, nodes, loading, loadError, activeId, defaultId, canEdit, basePath,
 }: Props) {
+  const base = basePath ?? `/smart-farm/${area}`;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   // 펼친 묶음 (처음에는 모두 닫힘)
@@ -151,7 +154,7 @@ export default function ProjectTree({
     onSuccess: node => {
       setEditing(null);
       refresh();
-      if (node.node_type === 'page') navigate(`/smart-farm/${area}/p/${node.id}`);
+      if (node.node_type === 'page') navigate(`${base}/p/${node.id}`);
     },
     onError: err => setError(errorMessage(err)),
   });
@@ -171,7 +174,7 @@ export default function ProjectTree({
     onSuccess: (_d, id) => {
       setEditing(null);
       // 보고 있던 항목(또는 그 상위)을 지웠으면 소개 화면으로
-      if (activeId !== null && (activeId === id || isUnder(activeId, id))) navigate(`/smart-farm/${area}`);
+      if (activeId !== null && (activeId === id || isUnder(activeId, id))) navigate(base);
       refresh();
     },
     onError: err => setError(errorMessage(err)),
@@ -186,7 +189,7 @@ export default function ProjectTree({
   };
 
   const pageLink = (id: string) =>
-    id === defaultId ? `/smart-farm/${area}` : `/smart-farm/${area}/p/${encodeURIComponent(id)}`;
+    id === defaultId ? base : `${base}/p/${encodeURIComponent(id)}`;
 
   const addForm = (parentId: string | null) =>
     editing?.mode === 'add' && editing.parentId === parentId && (

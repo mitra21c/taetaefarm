@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="자료를 정리하는 중">
+  <!-- 배경 -->
+  <ellipse cx="240" cy="168" rx="226" ry="146" fill="#fdeef4"/>
+  <circle cx="86" cy="70" r="6" fill="#ea4c89" opacity="0.5"/>
+  <circle cx="404" cy="112" r="5" fill="#ea4c89" opacity="0.5"/>
+  <path d="M380 46v18M371 55h18" stroke="#ffd166" stroke-width="4" stroke-linecap="round"/>
+  <path d="M64 168v14M57 175h14" stroke="#ffd166" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- 뒤쪽 문서 -->
+  <g transform="rotate(-8 190 170)">
+    <rect x="128" y="88" width="132" height="168" rx="12" fill="#ffffff" stroke="#0d0c22" stroke-width="3"/>
+    <path d="M150 120h88M150 140h70M150 160h80" stroke="#dbdbde" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- 폴더 -->
+  <path d="M150 140h62l14 16h108c8 0 14 6 14 14v98c0 8-6 14-14 14H150c-8 0-14-6-14-14V154c0-8 6-14 14-14z" fill="#f29b6c" stroke="#0d0c22" stroke-width="3" stroke-linejoin="round"/>
+  <!-- 폴더에서 나온 문서 -->
+  <rect x="176" y="112" width="128" height="120" rx="10" fill="#ffffff" stroke="#0d0c22" stroke-width="3"/>
+  <path d="M196 138h60M196 156h88M196 174h72" stroke="#e7e7e9" stroke-width="6" stroke-linecap="round"/>
+  <!-- 문서 속 새싹 -->
+  <path d="M276 202c0-12 0-22 0-30" fill="none" stroke="#3f9a5c" stroke-width="4" stroke-linecap="round"/>
+  <path d="M276 186c-4-12-16-18-28-15 2 13 14 20 28 15z" fill="#5cbf7a"/>
+  <path d="M277 178c3-13 14-20 27-19-1 14-12 22-27 19z" fill="#4caf6e"/>
+  <!-- 폴더 앞판 -->
+  <path d="M136 186h212v82c0 8-6 14-14 14H150c-8 0-14-6-14-14z" fill="#e8885a" stroke="#0d0c22" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M170 222h70" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity="0.55"/>
+
+  <!-- 공사 콘 -->
+  <g transform="translate(370 214)">
+    <rect x="-34" y="58" width="68" height="10" rx="4" fill="#0d0c22"/>
+    <path d="M-8 -6h16l22 64h-60z" fill="#ea4c89" stroke="#0d0c22" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-13 12h26M-19 32h38" stroke="#ffffff" stroke-width="7"/>
+  </g>
+
+  <!-- 렌치 -->
+  <g transform="translate(98 248) rotate(-35)">
+    <rect x="-6" y="-4" width="12" height="54" rx="6" fill="#9e9ea7" stroke="#0d0c22" stroke-width="3"/>
+    <path d="M-16 -18a16 16 0 1 0 32 0l-8 0-2 8h-12l-2-8z" fill="#9e9ea7" stroke="#0d0c22" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+</svg>

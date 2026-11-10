@@ -18,6 +18,19 @@ export interface FileNode extends TreeNode {
   url?: string;
 }
 
+/** public 폴더 안 파일의 전체 주소 (예: 'etc/menu.txt') */
+export const publicUrl = (path: string) =>
+  new URL(encodeURI(`${import.meta.env.BASE_URL}${path}`), window.location.origin).toString();
+
+/** 텍스트 파일 읽기. 없는 파일이면 오류 */
+export async function fetchText(url: string): Promise<string> {
+  const res = await fetch(url, { cache: 'no-cache' });
+  // 개발 서버는 없는 파일에도 index.html 을 돌려주므로 HTML 문서면 '없음' 으로 본다
+  const type = res.headers.get('content-type') ?? '';
+  if (!res.ok || type.includes('text/html')) throw new Error(`파일을 찾을 수 없습니다: ${decodeURI(url)}`);
+  return res.text();
+}
+
 const MARKERS = /^[\s\-–—*•└├│ㄴ┗┣]+/;
 
 export function parseProjectList(text: string, listUrl: string): FileNode[] {
